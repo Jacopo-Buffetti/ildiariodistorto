@@ -1,8 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import {deleteTale, updateTale} from "@/api/controllers/tales-db";
+import {deleteTale, getTale, updateTale} from "@/api/controllers/tales-db";
 import { CreateTaleSchema } from "@/schemas/tales";
 import getLevel from "@/app/api/auth/authByLevel";
+
+export async function GET(
+    _req: NextRequest,
+    context: { params: Promise<{ taleID: string }> }
+): Promise<NextResponse> {
+  try {
+    const { taleID } = await context.params;
+    const recipe = await getTale(taleID);
+
+    return NextResponse.json(recipe);
+  } catch (err) {
+    return NextResponse.json({ error: String(err) }, { status: 500 });
+  }
+}
 
 export async function PATCH(
     req: NextRequest,
