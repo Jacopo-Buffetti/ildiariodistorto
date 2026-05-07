@@ -7,7 +7,8 @@ const endpointLists = {
 
     // TALES OR STORIES
     addTale: () => "tales/create", // POST
-    taleById: (taleID: string) => `tales/${taleID}/`, // PATCH - DELETE
+    taleById: (taleID: string) => `tales/${taleID}/`, // PATCH - DELETE - GET
+    talesList: (page: number, limit: number) => `tales/?limit=${limit}&page=${page}`
 };
 
 export default endpointLists;
