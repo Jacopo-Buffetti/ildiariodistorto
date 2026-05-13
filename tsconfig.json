@@ -19,9 +19,10 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
+      "@/app/*": ["./app/*"],
       "@/styles/*": ["./src/assets/styles/*"],
-      "@/images/*": ["./src/assets/images/*"]
+      "@/images/*": ["./src/assets/images/*"],
+      "@/*": ["./src/*"]
     }
   },
   "include": [
