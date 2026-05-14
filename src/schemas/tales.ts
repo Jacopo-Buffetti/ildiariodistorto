@@ -8,6 +8,8 @@ export const TaleImageSchema = z.object({
   _id: z.string().optional(),
 });
 
+export type TaleImage = z.infer<typeof TaleImageSchema>;
+
 export const TalesSchema = z.object({
   id: z.string().optional(),
   title: z.string().nullable().optional(),

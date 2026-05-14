@@ -1,4 +1,5 @@
-@import "tailwindcss";
+@import "tailwindcss/theme";
+@import "tailwindcss/utilities";
 
 :root {
   --background: #ffffff;
@@ -19,6 +20,25 @@
   }
 }
 
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
 body {
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
@@ -29,4 +49,65 @@ q,
 cite,
 .blockquote {
   font-family: var(--font-quote), "Comic Sans MS", cursive !important;
+}
+
+.home-quote-sketch-wrapper {
+  position: relative;
+  width: min(920px, 100%);
+  background: #fff;
+}
+
+.home-quote-sketch {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.home-quote-box {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: 2.4rem 5rem;
+  background: transparent;
+}
+
+.home-quote-text {
+  margin: 0;
+  text-align: center;
+  font-size: clamp(1.6rem, 2.8vw, 2.6rem);
+  line-height: 1.25;
+  color: #222;
+}
+
+.home-quote-mark {
+  position: absolute;
+  font-size: clamp(3.2rem, 4vw, 4.4rem);
+  line-height: 1;
+  color: #1f1f1f;
+}
+
+.home-quote-mark-left {
+  top: 0.5rem;
+  left: 1.6rem;
+}
+
+.home-quote-mark-right {
+  right: 1.6rem;
+  bottom: 0.1rem;
+}
+
+@media (max-width: 768px) {
+  .home-quote-box {
+    padding: 2.1rem 3.2rem;
+  }
+
+  .home-quote-mark-left {
+    left: 0.9rem;
+  }
+
+  .home-quote-mark-right {
+    right: 0.9rem;
+  }
 }
