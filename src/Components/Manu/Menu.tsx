@@ -29,7 +29,7 @@ export default function Menu() {
         />
       </Link>
       <nav aria-label="Navigazione principale">
-        <ul className="flex flex-wrap items-center justify-end gap-4 text-[13px] font-semibold tracking-wide text-zinc-800 sm:gap-8">
+        <ul className="list-none flex flex-wrap items-center justify-end gap-4 text-[13px] font-semibold tracking-wide text-zinc-800 sm:gap-8">
           {MENU_ITEMS.map((item) => {
             const isActive =
               item.href === "/"
@@ -39,10 +39,10 @@ export default function Menu() {
               <li key={item.label}>
                 <Link
                   href={item.href}
-                  className={`border-b-2 pb-1 transition-colors ${
+                  className={`pb-1 text-zinc-800 transition-colors visited:text-zinc-800 hover:text-zinc-800 active:text-zinc-800 focus:text-zinc-800 ${
                     isActive
-                      ? "border-zinc-700"
-                      : "border-transparent hover:border-zinc-400"
+                      ? "underline decoration-2 underline-offset-4"
+                      : "no-underline hover:no-underline"
                   }`}
                 >
                   {item.label}

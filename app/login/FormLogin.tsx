@@ -16,12 +16,16 @@ export const FormLogin = () => {
     const result = await signIn("credentials", {
       email: formValue.email,
       password: formValue.password,
+      callbackUrl: "/area-riservata",
       redirect: false,
     });
-    if (result?.error) {
+
+    if (!result) {
+      setFormError("Authentication failed");
+    } else if (result.error || !result.ok) {
       setFormError(result.error ?? "Authentication failed");
     } else {
-      router.push("/");
+      router.replace("/area-riservata");
     }
   };
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {

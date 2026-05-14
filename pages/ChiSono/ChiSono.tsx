@@ -1,5 +1,6 @@
 import Footer from "@/Components/Footer/Footer";
 import Menu from "@/Components/Manu/Menu";
+import SketchFrame from "@/Components/SketchFrame/SketchFrame";
 import Image from "next/image";
 
 export default function ChiSono() {
@@ -15,31 +16,31 @@ export default function ChiSono() {
             <div className="mx-auto mt-4 h-[2px] w-14 bg-zinc-400" />
           </header>
 
-          <div className="grid gap-8 md:grid-cols-[300px_1fr_400px] md:items-start">
+          <div className="grid gap-8 md:grid-cols-[316px_minmax(0,1fr)] md:items-start xl:grid-cols-[316px_minmax(0,1fr)_376px]">
             <div className="mx-auto md:mx-0 md:self-start">
               <Image
                 src="/assets/immagine_personale.png"
                 alt="Ritratto personale"
-                width={280}
-                height={280}
-                className="h-[280px] w-[280px] rounded-full object-cover"
+                width={292}
+                height={292}
+                className="h-auto w-full max-w-[292px] rounded-full object-cover"
               />
             </div>
 
-            <div className="space-y-4 text-base leading-8 text-zinc-700 sm:text-lg">
+            <div className="min-w-0 space-y-4 text-base leading-8 text-zinc-700 sm:text-lg">
               <p>
                 Mi chiamo <strong>Jacopo</strong>. <br />
                 Sono un Capricorno, ma non so se questo dica davvero qualcosa di
-                me. Forse solo che ho imparato a salire montagne interiori che
-                nessuno vede, e a farlo in silenzio, con quella ostinazione che
-                nasce non dalla forza, ma dalla necessità. <br />
+                me. Forse solo che vedo montagne interiori che nessun'altro
+                vede, e che ho quella ostinazione che nasce non dalla forza, ma
+                dall'insicurezza. <br />
                 Scrivere, per me, non è un hobby. È un modo per non soccombere a
                 ciò che mi porto dentro. <br />
-                La mia mente è un luogo dove i pensieri si muovono come ombre: a
-                volte sussurrano, a volte urlano. Alcuni giorni mi sembra di
-                essere un labirinto costruito con le mie stesse fragilità, e la
-                penna è l’unico filo che posso seguire per non perdermi del
-                tutto. <br />
+                La mia mente è un luogo contorto dove i pensieri si muovono come
+                ombre: a volte sussurrano, a volte urlano. Alcuni giorni mi
+                sembra di essere un labirinto costruito con le mie stesse
+                fragilità, e la penna è l’unico filo che posso seguire per non
+                perdermi del tutto. <br />
                 Le parole sono il rifugio in cui mi nascondo quando fuori fa
                 troppo rumore. Sono la coperta che tiro fino a coprirmi il viso,
                 sperando che il mondo non trovi il modo di entrare. Eppure,
@@ -69,14 +70,16 @@ export default function ChiSono() {
                 smettere di sentire.
               </p>
             </div>
-            <div className="mx-auto md:mx-0 md:flex md:h-full md:items-end md:justify-end">
-              <Image
-                src="/assets/immagine_penna.png"
-                alt="Ritratto Penna"
-                width={400}
-                height={400}
-                className="h-auto w-[400px] object-contain md:w-[400px] rounded-[20px]"
-              />
+            <div className="mx-auto md:col-span-2 md:mx-0 md:flex md:justify-center xl:col-span-1 xl:h-full xl:items-end xl:justify-end">
+              <SketchFrame className="w-full max-w-[360px]">
+                <Image
+                  src="/assets/immagine_penna.png"
+                  alt="Ritratto Penna"
+                  width={360}
+                  height={360}
+                  className="h-auto w-full max-w-[360px] rounded-[20px] object-contain"
+                />
+              </SketchFrame>
             </div>
           </div>
 

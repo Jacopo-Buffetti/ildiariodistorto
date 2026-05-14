@@ -10,17 +10,8 @@ export default function AreaRiservataLayout({
           <a href="/area-riservata" className="hover:text-zinc-900">
             DASHBOARD
           </a>
-          <a href="/area-riservata/scritti" className="hover:text-zinc-900">
-            I MIEI SCRITTI
-          </a>
           <a href="/area-riservata/aggiungi" className="hover:text-zinc-900">
             AGGIUNGI SCRITTO
-          </a>
-          <a
-            href="/area-riservata/impostazioni"
-            className="hover:text-zinc-900"
-          >
-            IMPOSTAZIONI
           </a>
           <a href="/login" className="mt-8 text-zinc-400 hover:text-zinc-700">
             ESCI
