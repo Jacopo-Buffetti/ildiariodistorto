@@ -1,6 +1,6 @@
 {
   "name": "il-diario-distorto",
-  "version": "0.1.0",
+  "version": "1.0.6",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -13,17 +13,21 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
+    "@hugerte/hugerte-react": "^2.0.2",
     "bcrypt": "^6.0.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-simple-import-sort": "^13.0.0",
+    "he": "^1.2.0",
+    "hugerte": "^1.0.10",
     "mongoose": "^9.6.1",
     "next": "16.2.4",
     "next-auth": "^4.24.14",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "roughjs": "^4.6.6",
     "typescript-eslint": "^8.59.2",
     "zod": "^4.4.3"
   },
