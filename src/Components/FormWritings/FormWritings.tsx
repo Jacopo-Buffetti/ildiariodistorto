@@ -2,15 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { Editor } from "@hugerte/hugerte-react";
-import { CreateTaleSchema } from "@/schemas/tales";
+import type { TaleImage } from "@/schemas/tales";
 
-type CoverImage = {
-  url: string;
-  path: string;
-  relativePath: string;
-  name: string;
-  _id?: string;
-};
+type CoverImage = TaleImage;
 
 type TaleResponse = {
   id?: string;
@@ -84,32 +78,17 @@ export default function FormWritings({
     setSuccess(null);
     setLoading(true);
 
-    const formData = new FormData(e.currentTarget);
-    const description = String(formData.get("contenuto") ?? "");
-    const copertina = formData.get("copertina");
+    // Prendi i valori direttamente dallo stato React
+    const copertinaInput = (
+      e.currentTarget.elements.namedItem("copertina") as HTMLInputElement
+    )?.files?.[0];
 
-    let nextCoverImage = coverImage;
-    if (copertina instanceof File && copertina.size > 0) {
-      nextCoverImage = {
-        url: "",
-        path: "",
-        relativePath: "",
-        name: copertina.name,
-      };
-    }
-
-    const result = CreateTaleSchema.safeParse({
-      title: titolo,
-      description,
-      CoverImage: nextCoverImage,
-    });
-    if (!result.success) {
-      setError(
-        "Errore di validazione: " +
-          result.error.issues.map((i) => i.message).join(", ")
-      );
-      setLoading(false);
-      return;
+    const formData = new FormData();
+    formData.append("title", titolo);
+    formData.append("tipo", tipo);
+    formData.append("description", contenuto);
+    if (copertinaInput && copertinaInput.size > 0) {
+      formData.append("copertina", copertinaInput);
     }
 
     try {
@@ -122,20 +101,14 @@ export default function FormWritings({
       let res = await fetch(endpoint, {
         method,
         credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(result.data),
+        body: formData,
       });
 
       if (isEditMode && res.status === 405) {
         res = await fetch(endpoint, {
           method: "PATCH",
           credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(result.data),
+          body: formData,
         });
       }
 

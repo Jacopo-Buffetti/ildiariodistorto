@@ -52,11 +52,7 @@ export async function PATCH(
 
     const isAuth = await getLevel(req, "admin");
     if (!isAuth) {
-<<<<<<< HEAD
-      return NextResponse.json(
-        { error: "You are not authorised" },
-        { status: 401 }
-      );
+      return errorResponse(401, "UNAUTHORIZED", "You are not authorised");
     }
 
     if (
@@ -64,19 +60,10 @@ export async function PATCH(
       Array.isArray(rawBody) ||
       typeof rawBody !== "object"
     ) {
-      return NextResponse.json(
-        { error: "Request body must be a JSON object", success: false },
-        { status: 400 }
-=======
-      return errorResponse(401, "UNAUTHORIZED", "You are not authorised");
-    }
-
-    if (rawBody === null || Array.isArray(rawBody) || typeof rawBody !== "object") {
       return errorResponse(
         400,
         "INVALID_REQUEST_BODY",
         "Request body must be a JSON object"
->>>>>>> origin/uploadImage
       );
     }
 
@@ -113,60 +100,10 @@ export async function DELETE(
 ): Promise<NextResponse> {
   try {
     const { taleID } = await context.params;
-<<<<<<< HEAD
-    const contentType = req.headers.get("content-type") ?? "";
-    if (!contentType.includes("application/json")) {
-      return NextResponse.json(
-        {
-          error: "Unsupported content type. Use application/json",
-          success: false,
-        },
-        { status: 415 }
-      );
-    }
-
-    let rawBody: unknown;
-    try {
-      rawBody = await req.json();
-    } catch {
-      return NextResponse.json(
-        { error: "Malformed JSON body", success: false },
-        { status: 400 }
-      );
-    }
-
-    const isAuth = await getLevel(req, "admin");
-    if (!isAuth) {
-      return NextResponse.json(
-        { error: "You are not authorised" },
-        { status: 401 }
-      );
-    }
-
-    if (
-      rawBody === null ||
-      Array.isArray(rawBody) ||
-      typeof rawBody !== "object"
-    ) {
-      return NextResponse.json(
-        { error: "Request body must be a JSON object", success: false },
-        { status: 400 }
-      );
-    }
-
-    const body = rawBody as Record<string, unknown>;
-    const parsed = CreateTaleSchema.safeParse(body);
-    if (!parsed.success) {
-      return NextResponse.json(
-        { error: parsed.error.issues, success: false },
-        { status: 400 }
-      );
-=======
 
     const isAuth = await getLevel(req, "admin");
     if (!isAuth) {
       return errorResponse(401, "UNAUTHORIZED", "You are not authorised");
->>>>>>> origin/uploadImage
     }
     const tale = await deleteTale(taleID);
 
