@@ -74,13 +74,14 @@ export default function FormWritings({
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const form = e.currentTarget;
     setError(null);
     setSuccess(null);
     setLoading(true);
 
     // Prendi i valori direttamente dallo stato React
     const copertinaInput = (
-      e.currentTarget.elements.namedItem("copertina") as HTMLInputElement
+      form.elements.namedItem("copertina") as HTMLInputElement
     )?.files?.[0];
 
     const formData = new FormData();
@@ -88,7 +89,8 @@ export default function FormWritings({
     formData.append("tipo", tipo);
     formData.append("description", contenuto);
     if (copertinaInput && copertinaInput.size > 0) {
-      formData.append("copertina", copertinaInput);
+      formData.append("CoverImage", copertinaInput, copertinaInput.name);
+      formData.append("fileName", copertinaInput.name);
     }
 
     try {
@@ -112,8 +114,12 @@ export default function FormWritings({
         });
       }
 
-      const data = await res.json();
-      if (res.ok && !data.error) {
+      const data = (await res.json()) as {
+        error?: unknown;
+        code?: string;
+        message?: string;
+      };
+      if (res.ok && !data.error && !data.code) {
         setSuccess(
           isEditMode
             ? "Scritto modificato con successo!"
@@ -126,10 +132,16 @@ export default function FormWritings({
           setContenuto("");
           setCoverImage(undefined);
           setCopertinaName("");
-          e.currentTarget.reset();
+          form.reset();
         }
       } else {
-        setError("Errore dal server: " + (data.error || "Errore sconosciuto"));
+        const serverMessage =
+          typeof data.message === "string"
+            ? data.message
+            : typeof data.error === "string"
+              ? data.error
+              : "Errore sconosciuto";
+        setError("Errore dal server: " + serverMessage);
       }
     } catch (err) {
       setError("Errore di rete: " + String(err));

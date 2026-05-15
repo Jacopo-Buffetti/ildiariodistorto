@@ -38,7 +38,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
           [...formData.entries()]
             .filter(
               ([key]) =>
-                !["file", "fileName", "payload", "data", "body"].includes(key)
+                !["file", "fileName", "CoverImage", "payload", "data", "body"].includes(key)
             )
             .map(([key, value]) => [
               key,
@@ -60,7 +60,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       }
 
       body = rawBody as Record<string, unknown>;
-      const maybeFile = formData.get("file");
+      const maybeFile = formData.get("CoverImage");
       file = maybeFile instanceof File ? maybeFile : null;
       const maybeFileName = formData.get("fileName");
       fileName =
