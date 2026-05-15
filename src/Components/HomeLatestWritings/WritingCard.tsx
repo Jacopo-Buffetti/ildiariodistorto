@@ -22,11 +22,12 @@ export default function WritingCard({ card }: { card: HomeCard }) {
     <Link href={`/scritto/${card.taleId}`} className="block no-underline">
       <SketchFrame className="w-full">
         <article className="flex h-full min-h-[430px] flex-col overflow-hidden rounded-[12px] bg-white">
-          <div className="flex h-[210px] items-center justify-center border-b border-zinc-300 bg-zinc-50 p-6">
-            <img
-              src={card.imageUrl}
-              alt={card.titleText}
-              className="h-full w-full object-contain"
+          <div className="h-[210px] border-b border-zinc-300 bg-zinc-50">
+            <div
+              role="img"
+              aria-label={card.titleText}
+              className="h-full w-full bg-cover bg-center bg-no-repeat"
+              style={{ backgroundImage: `url(${card.imageUrl})` }}
             />
           </div>
 
