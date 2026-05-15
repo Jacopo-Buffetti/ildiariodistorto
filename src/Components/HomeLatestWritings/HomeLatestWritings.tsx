@@ -1,80 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
 import useWritings from "./useWritings";
 import WritingCard from "./WritingCard";
+import SketchFrame from "@/Components/SketchFrame/SketchFrame";
 
-type Tale = {
-  id?: string;
-  _id?: string;
-  title?: string | null;
-  description: string;
-  CoverImage?: {
-    url: string;
-    path: string;
-    relativePath: string;
-    name: string;
-    _id?: string;
-  };
-};
-
-type TalesResponse = {
-  data?: Tale[];
-  error?: unknown;
-};
-
-type HomeCard = {
-  key: string;
-  imageUrl: string;
-  typeText: string;
-  titleText: string;
-};
-
-const fallbackImages = [
-  "/assets/piuma_tavolo.png",
-  "/assets/taccuino.png",
-  "/assets/candela.png",
-];
-
-const fallbackCards: Tale[] = [
-  {
-    id: "fallback-1",
-    title: "La notte ascolta",
-    description: "Poesia",
-  },
-  {
-    id: "fallback-2",
-    title: "Il tempo sospeso",
-    description: "Racconto breve",
-  },
-  {
-    id: "fallback-3",
-    title: "Diario di un istante",
-    description: "Pensiero",
-  },
-];
-
-function truncateText(value: string, maxLength: number) {
-  if (value.length <= maxLength) {
-    return value;
-  }
-  return `${value.slice(0, maxLength).trim()}...`;
-}
-
-function toHomeCard(item: Tale, index: number): HomeCard {
-  const imageUrl =
-    item.CoverImage?.url || fallbackImages[index % fallbackImages.length];
-  const typeText = truncateText(item.description || "Scritto", 28);
-  const titleText = truncateText(item.title?.trim() || "Senza titolo", 44);
-  const key = item.id ?? item._id ?? `card-${index}`;
-
-  return {
-    key,
-    imageUrl,
-    typeText,
-    titleText,
-  };
+function WritingCardSkeleton() {
+  return (
+    <SketchFrame className="h-full w-full">
+      <article
+        className="flex h-[470px] flex-col overflow-hidden rounded-[12px] bg-white"
+        aria-hidden="true"
+      >
+        <div className="h-[210px] animate-pulse border-b border-zinc-300 bg-zinc-200" />
+        <div className="flex flex-1 flex-col items-center px-6 py-6 text-center">
+          <div className="mt-3 h-10 w-3/4 animate-pulse rounded bg-zinc-200" />
+          <div className="mt-4 h-6 w-5/6 animate-pulse rounded bg-zinc-200" />
+          <div className="mt-3 h-6 w-2/3 animate-pulse rounded bg-zinc-200" />
+          <div className="mt-3 h-6 w-4/6 animate-pulse rounded bg-zinc-200" />
+        </div>
+      </article>
+    </SketchFrame>
+  );
 }
 
 export default function HomeLatestWritings() {
@@ -96,14 +42,16 @@ export default function HomeLatestWritings() {
       </header>
 
       <div className="mx-auto grid max-w-[1200px] grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-        {homeCards.map((card) => (
-          <WritingCard key={card.key} card={card} />
-        ))}
+        {loading
+          ? Array.from({ length: 3 }).map((_, index) => (
+              <WritingCardSkeleton key={`loading-${index}`} />
+            ))
+          : homeCards.map((card) => <WritingCard key={card.key} card={card} />)}
       </div>
 
-      {loading && (
+      {!loading && homeCards.length === 0 && (
         <p className="mt-6 text-center text-sm text-zinc-500">
-          Caricamento scritti...
+          Nessuno scritto disponibile.
         </p>
       )}
     </section>
