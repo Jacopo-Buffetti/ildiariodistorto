@@ -92,7 +92,7 @@ export default function useWritings() {
 
     const load = async () => {
       try {
-        const res = await fetch("/api/tales?page=1&limit=3", {
+        const res = await fetch("/api/tales?page=1&limit=100", {
           method: "GET",
           credentials: "include",
         });
@@ -104,9 +104,7 @@ export default function useWritings() {
           return;
         }
         if (isMounted) {
-          setWritings(
-            Array.isArray(payload.data) ? payload.data.slice(0, 3) : []
-          );
+          setWritings(Array.isArray(payload.data) ? payload.data : []);
         }
       } catch {
         if (isMounted) {
