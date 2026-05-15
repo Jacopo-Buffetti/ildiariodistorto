@@ -75,7 +75,7 @@ export async function getTale(id: string) {
 
     const parsedId = stringToObjectId(id);
     if (!parsedId) {
-      return { error: "User not found" };
+      return { error: "Tale not found" };
     }
     const tale = await Tale.findById(parsedId, { password: 0 })
       .lean({ virtuals: true })
@@ -83,7 +83,7 @@ export async function getTale(id: string) {
     if (tale?.title) {
       return { ...tale };
     } else {
-      return { error: { message: "User not found" } };
+      return { error: { message: "Tale not found" } };
     }
   } catch (error) {
     return { error };
@@ -100,19 +100,19 @@ export async function updateTale(id: string, data: Partial<TaleDocument>) {
     };
 
     if (!parsedId) {
-      return { error: { message: "User not found" } };
+      return { error: { message: "Tale not found" } };
     }
 
-    const user = await Tale.findByIdAndUpdate(parsedId, updateData, {
+    const tale = await Tale.findByIdAndUpdate(parsedId, updateData, {
       returnDocument: "after",
     })
       .lean({ virtuals: true })
       .exec();
 
-    if (user) {
-      return user;
+    if (tale) {
+      return tale;
     } else {
-      return { error: { message: "User not found" } };
+      return { error: { message: "Tale not found" } };
     }
   } catch (error) {
     return { error };
@@ -126,15 +126,15 @@ export async function deleteTale(id: string) {
     const parsedId = stringToObjectId(id);
 
     if (!parsedId) {
-      return { error: { message: "User not found" } };
+      return { error: { message: "Tale not found" } };
     }
 
-    const user = await Tale.findByIdAndDelete(parsedId).exec();
+    const tale = await Tale.findByIdAndDelete(parsedId).exec();
 
-    if (user) {
-      return { message: "User deleted" };
+    if (tale) {
+      return { message: "Tale deleted" };
     } else {
-      return { error: { message: "User not found" } };
+      return { error: { message: "Tale not found" } };
     }
   } catch (error) {
     return { error };
