@@ -209,6 +209,8 @@ export default function FormWritings({
             init={{
               height: 320,
               menubar: false,
+              browser_spellcheck: true,
+              contextmenu_never_use_native: false,
               plugins: "lists link code",
               toolbar:
                 "undo redo | styles | bold italic | bullist numlist | link | code",
