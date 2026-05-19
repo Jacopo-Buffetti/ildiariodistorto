@@ -22,6 +22,7 @@ const TaleMongooseSchema = new Schema<Itale>(
         title: { type: String, required: true },
         description: { type: String, required: true },
         order: { type: Number, default: 0 },
+        type: { type: String, required: true },
         CoverImage: {
             url: String,
             path: String,
