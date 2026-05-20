@@ -10,6 +10,7 @@ type TaleResponse = {
   id?: string;
   _id?: string;
   title?: string | null;
+  type?: string;
   description?: string;
   CoverImage?: CoverImage;
   error?: unknown;
@@ -59,6 +60,7 @@ export default function FormWritings({
         }
 
         setTitolo(data.title ?? "");
+        setTipo(data.type ?? "Poesia");
         setContenuto(data.description ?? "");
         setCoverImage(data.CoverImage);
         setCopertinaName(data.CoverImage?.name ?? "");
@@ -86,7 +88,7 @@ export default function FormWritings({
 
     const formData = new FormData();
     formData.append("title", titolo);
-    formData.append("tipo", tipo);
+    formData.append("type", tipo);
     formData.append("description", contenuto);
     if (copertinaInput && copertinaInput.size > 0) {
       formData.append("CoverImage", copertinaInput, copertinaInput.name);

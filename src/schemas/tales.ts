@@ -13,6 +13,7 @@ export type TaleImage = z.infer<typeof TaleImageSchema>;
 export const TalesSchema = z.object({
   id: z.string().optional(),
   title: z.string().nullable().optional(),
+  type: z.string().optional(),
   description: z.string(),
   CoverImage: TaleImageSchema.optional(),
 });

@@ -7,37 +7,38 @@ export type { TalesClass } from "@/schemas/tales";
 
 /** Server-side type that allows ObjectId for _id (used in controllers) */
 export type TaleDocument = TaleType & {
-    _id?: mongoose.Types.ObjectId | string;
+  _id?: mongoose.Types.ObjectId | string;
 };
 
 /** Internal MongoDB document type */
 interface Itale extends Omit<TaleType, "id" | "role"> {
-    _id: mongoose.Types.ObjectId;
-    role?: mongoose.Types.ObjectId | string;
+  _id: mongoose.Types.ObjectId;
+  role?: mongoose.Types.ObjectId | string;
 }
 
 const TaleMongooseSchema = new Schema<Itale>(
-    {
-        title: { type: String, required: true },
-        description: { type: String, required: true },
-        CoverImage: {
-            url: String,
-            path: String,
-            relativePath: String,
-            name: String,
-        }
+  {
+    title: { type: String, required: false },
+    type: { type: String, required: false },
+    description: { type: String, required: true },
+    CoverImage: {
+      url: String,
+      path: String,
+      relativePath: String,
+      name: String,
     },
-    {
-        timestamps: true,
-        collection: "tales",
-    }
+  },
+  {
+    timestamps: true,
+    collection: "tales",
+  }
 );
 
 /** `id` virtual as hex string — available with lean({ virtuals: true }) */
 TaleMongooseSchema.virtual("id").get(function (this: Itale) {
-    return this._id.toHexString();
+  return this._id.toHexString();
 });
 
 export const Tale: Model<Itale> =
-    (mongoose.models["Tales"] as Model<Itale>) ??
-    model<Itale>("Tales", TaleMongooseSchema);
+  (mongoose.models["Tales"] as Model<Itale>) ??
+  model<Itale>("Tales", TaleMongooseSchema);
