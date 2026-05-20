@@ -19,22 +19,26 @@ export function truncate(text: string, maxLength: number): string {
 
 export default function WritingCard({ card }: { card: HomeCard }) {
   return (
-    <Link href={`/scritto/${card.taleId}`} className="block no-underline">
-      <SketchFrame className="w-full">
-        <article className="flex h-full min-h-[430px] flex-col overflow-hidden rounded-[12px] bg-white">
-          <div className="flex h-[210px] items-center justify-center border-b border-zinc-300 bg-zinc-50 p-6">
-            <img
-              src={card.imageUrl}
-              alt={card.titleText}
-              className="h-full w-full object-contain"
+    <Link
+      href={`/scritto/${card.taleId}`}
+      className="block h-full no-underline"
+    >
+      <SketchFrame className="h-full w-full">
+        <article className="flex h-[470px] flex-col overflow-hidden rounded-[12px] bg-white">
+          <div className="h-[210px] border-b border-zinc-300 bg-zinc-50">
+            <div
+              role="img"
+              aria-label={card.titleText}
+              className="h-full w-full bg-cover bg-center bg-no-repeat"
+              style={{ backgroundImage: `url(${card.imageUrl})` }}
             />
           </div>
 
           <div className="flex flex-1 flex-col items-center px-6 py-6 text-center">
-            <h3 className="blockquote mt-3 text-4xl text-zinc-900">
+            <h3 className="blockquote mt-3 overflow-hidden text-4xl leading-tight text-zinc-900 [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2]">
               {card.titleText}
             </h3>
-            <div className="text-xl text-zinc-800">
+            <div className="mt-3 overflow-hidden text-xl leading-relaxed text-zinc-800 [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:4]">
               {truncate(stripHtml(card.typeText), 140)}
             </div>
           </div>

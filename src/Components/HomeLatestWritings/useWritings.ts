@@ -33,24 +33,6 @@ const fallbackImages = [
   "/assets/candela.png",
 ];
 
-const fallbackCards: Tale[] = [
-  {
-    id: "fallback-1",
-    title: "La notte ascolta",
-    description: "Poesia",
-  },
-  {
-    id: "fallback-2",
-    title: "Il tempo sospeso",
-    description: "Racconto breve",
-  },
-  {
-    id: "fallback-3",
-    title: "Diario di un istante",
-    description: "Pensiero",
-  },
-];
-
 function truncateText(value: string, maxLength: number = 140) {
   if (value.length <= maxLength) {
     return value;
@@ -92,7 +74,7 @@ export default function useWritings() {
 
     const load = async () => {
       try {
-        const res = await fetch("/api/tales?page=1&limit=3", {
+        const res = await fetch("/api/tales?page=1&limit=100", {
           method: "GET",
           credentials: "include",
         });
@@ -104,9 +86,7 @@ export default function useWritings() {
           return;
         }
         if (isMounted) {
-          setWritings(
-            Array.isArray(payload.data) ? payload.data.slice(0, 3) : []
-          );
+          setWritings(Array.isArray(payload.data) ? payload.data : []);
         }
       } catch {
         if (isMounted) {
@@ -126,14 +106,7 @@ export default function useWritings() {
     };
   }, []);
 
-  const cards = useMemo(() => {
-    if (writings.length > 0) {
-      return writings;
-    }
-    return fallbackCards;
-  }, [writings]);
-
-  const homeCards = useMemo(() => cards.map(toHomeCard), [cards]);
+  const homeCards = useMemo(() => writings.map(toHomeCard), [writings]);
 
   return { homeCards, loading };
 }
