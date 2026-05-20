@@ -58,7 +58,7 @@ export default function TableWritings() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/tales?page=1&limit=100", {
+      const res = await fetch("/api/tales?page=1&limit=100&sort=updatedAt&sortBy=asc", {
         method: "GET",
         credentials: "include",
       });

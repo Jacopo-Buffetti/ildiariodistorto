@@ -1,12 +1,14 @@
 import mongoose from "mongoose";
 
 import connectDB from "@/api/lib/connect-db";
-import { Tale, TaleDocument } from "@/api/Models/Tales";
+import {ReorderItem, Tale, TaleDocument} from "@/api/Models/Tales";
 import { stringToObjectId } from "@/utils/server-utils";
 
 interface Filter {
   page?: number;
   limit?: number;
+  sort?: string;
+  sortBy?: string;
 }
 
 export async function getTales(filter: Filter = {}) {
@@ -16,17 +18,19 @@ export async function getTales(filter: Filter = {}) {
     const page = filter.page ?? 1;
     const limit = filter.limit ?? 50;
     const skip = (page - 1) * limit;
-
-    const users = await Tale.find({}, { password: 0 })
+    const sortOrder = filter.sort === "desc" ? -1 : 1;
+    const sortBy = filter.sortBy ?? "order";
+    const tales = await Tale.find()
+        .sort({ [sortBy]: sortOrder })
       .skip(skip)
       .limit(limit)
       .lean({ virtuals: true })
       .exec();
 
-    const results = users.length;
+    const results = tales.length;
 
     return {
-      data: users,
+      data: tales,
       page,
       limit,
       results,
@@ -138,5 +142,26 @@ export async function deleteTale(id: string) {
     }
   } catch (error) {
     return { error };
+  }
+}
+
+export async function reorderTales(updates: ReorderItem[]) {
+  if (!updates.length) return;
+  try {
+    const tale = await Tale.bulkWrite(
+        updates.map(({id, order}) => ({
+          updateOne: {
+            filter: {_id: new mongoose.Types.ObjectId(id)},
+            update: {$set: {order}},
+          },
+        }))
+    );
+    if (tale) {
+      return {message: "Tale order updated"};
+    } else {
+      return {error: {message: "Tale order not updated found"}};
+    }
+  } catch (error) {
+    return {error};
   }
 }

@@ -14,6 +14,7 @@ export type TaleDocument = TaleType & {
 interface Itale extends Omit<TaleType, "id" | "role"> {
   _id: mongoose.Types.ObjectId;
   role?: mongoose.Types.ObjectId | string;
+  order?: number;
 }
 
 const TaleMongooseSchema = new Schema<Itale>(
@@ -21,6 +22,7 @@ const TaleMongooseSchema = new Schema<Itale>(
     title: { type: String, required: false },
     type: { type: String, required: false },
     description: { type: String, required: true },
+    order: { type: Number, default: 0 },
     CoverImage: {
       url: String,
       path: String,
@@ -42,3 +44,5 @@ TaleMongooseSchema.virtual("id").get(function (this: Itale) {
 export const Tale: Model<Itale> =
   (mongoose.models["Tales"] as Model<Itale>) ??
   model<Itale>("Tales", TaleMongooseSchema);
+
+export type ReorderItem = { id: string; order: number };
