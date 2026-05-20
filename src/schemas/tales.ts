@@ -10,6 +10,7 @@ export const TaleImageSchema = z.object({
 
 export type TaleImage = z.infer<typeof TaleImageSchema>;
 
+/** DB / internal schema (field names as stored in MongoDB) */
 export const TalesSchema = z.object({
   id: z.string().optional(),
   title: z.string().nullable().optional(),
@@ -25,3 +26,33 @@ export type CreateTale = z.infer<typeof CreateTaleSchema>;
 
 /** Client-safe type used by components (no password, mirrors the old UserClass from Models) */
 export type TalesClass = Tales & { _id?: string };
+
+// ---------------------------------------------------------------------------
+// API request schema (what the form sends → server)
+// Uses Italian field names and transforms them to the DB shape.
+// ---------------------------------------------------------------------------
+
+/** Raw input shape sent by the form */
+export const CreateTaleRequestSchema = z
+  .object({
+    title: z.string().nullable().optional(),
+    tipo: z.string().nullable().optional(),
+    description: z.string(),
+    CoverImage: TaleImageSchema.optional(),
+  })
+  .transform(({ tipo, ...rest }) => ({ ...rest, type: tipo }));
+
+export type CreateTaleRequest = z.input<typeof CreateTaleRequestSchema>;
+
+/**
+ * Field names the form must use when building FormData.
+ * `satisfies Record<keyof CreateTaleRequest, string>` ensures that any rename
+ * or addition in the request schema causes a compile-time error here and in
+ * every consumer.
+ */
+export const TALE_FORM_KEYS = {
+  title: "title",
+  tipo: "tipo",
+  description: "description",
+  CoverImage: "CoverImage",
+} as const satisfies Record<keyof CreateTaleRequest, string>;

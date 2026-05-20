@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { deleteTale, getTale, updateTale } from "@/api/controllers/tales-db";
-import { CreateTaleSchema } from "@/schemas/tales";
+import { CreateTaleRequestSchema } from "@/schemas/tales";
 import getLevel from "@/app/api/auth/authByLevel";
 import {
   errorResponse,
   internalErrorResponse,
 } from "@/app/api/lib/error-response";
-import {del, put} from "@vercel/blob";
+import { del, put } from "@vercel/blob";
 
 export async function GET(
   _req: NextRequest,
@@ -58,7 +58,7 @@ export async function PATCH(
       const formData = await req.formData();
 
       const payloadField =
-          formData.get("payload") ?? formData.get("data") ?? formData.get("body");
+        formData.get("payload") ?? formData.get("data") ?? formData.get("body");
 
       let rawBody: unknown;
       if (typeof payloadField === "string" && payloadField.trim().length > 0) {
@@ -69,27 +69,34 @@ export async function PATCH(
         }
       } else {
         rawBody = Object.fromEntries(
-            [...formData.entries()]
-                .filter(
-                    ([key]) =>
-                        !["file", "fileName", "CoverImage", "payload", "data", "body"].includes(key)
-                )
-                .map(([key, value]) => [
-                  key,
-                  typeof value === "string" ? value : value.name,
-                ])
+          [...formData.entries()]
+            .filter(
+              ([key]) =>
+                ![
+                  "file",
+                  "fileName",
+                  "CoverImage",
+                  "payload",
+                  "data",
+                  "body",
+                ].includes(key)
+            )
+            .map(([key, value]) => [
+              key,
+              typeof value === "string" ? value : value.name,
+            ])
         );
       }
 
       if (
-          rawBody === null ||
-          Array.isArray(rawBody) ||
-          typeof rawBody !== "object"
+        rawBody === null ||
+        Array.isArray(rawBody) ||
+        typeof rawBody !== "object"
       ) {
         return errorResponse(
-            400,
-            "INVALID_REQUEST_BODY",
-            "Request body must be a JSON object"
+          400,
+          "INVALID_REQUEST_BODY",
+          "Request body must be a JSON object"
         );
       }
 
@@ -98,7 +105,7 @@ export async function PATCH(
       file = maybeFile instanceof File ? maybeFile : null;
       const maybeFileName = formData.get("fileName");
       fileName =
-          typeof maybeFileName === "string" ? maybeFileName : (file?.name ?? "");
+        typeof maybeFileName === "string" ? maybeFileName : (file?.name ?? "");
     } else if (contentType.includes("application/json")) {
       let rawBody: unknown;
       try {
@@ -108,23 +115,23 @@ export async function PATCH(
       }
 
       if (
-          rawBody === null ||
-          Array.isArray(rawBody) ||
-          typeof rawBody !== "object"
+        rawBody === null ||
+        Array.isArray(rawBody) ||
+        typeof rawBody !== "object"
       ) {
         return errorResponse(
-            400,
-            "INVALID_REQUEST_BODY",
-            "Request body must be a JSON object"
+          400,
+          "INVALID_REQUEST_BODY",
+          "Request body must be a JSON object"
         );
       }
 
       body = rawBody as Record<string, unknown>;
     } else {
       return errorResponse(
-          415,
-          "UNSUPPORTED_CONTENT_TYPE",
-          "Unsupported content type. Use application/json or multipart/form-data"
+        415,
+        "UNSUPPORTED_CONTENT_TYPE",
+        "Unsupported content type. Use application/json or multipart/form-data"
       );
     }
 
@@ -152,7 +159,7 @@ export async function PATCH(
       };
     }
 
-    const parsed = CreateTaleSchema.safeParse(updatedData);
+    const parsed = CreateTaleRequestSchema.safeParse(updatedData);
     if (!parsed.success) {
       return errorResponse(400, "VALIDATION_ERROR", "Invalid tale payload", {
         issues: parsed.error.issues,

@@ -5,7 +5,7 @@ import {
   internalErrorResponse,
 } from "@/app/api/lib/error-response";
 import { createTale } from "@/api/controllers/tales-db";
-import { CreateTaleSchema } from "@/schemas/tales";
+import { CreateTaleRequestSchema } from "@/schemas/tales";
 import { put } from "@vercel/blob";
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
@@ -38,7 +38,14 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
           [...formData.entries()]
             .filter(
               ([key]) =>
-                !["file", "fileName", "CoverImage", "payload", "data", "body"].includes(key)
+                ![
+                  "file",
+                  "fileName",
+                  "CoverImage",
+                  "payload",
+                  "data",
+                  "body",
+                ].includes(key)
             )
             .map(([key, value]) => [
               key,
@@ -119,7 +126,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       };
     }
 
-    const parsed = CreateTaleSchema.safeParse(updatedData);
+    const parsed = CreateTaleRequestSchema.safeParse(updatedData);
     if (!parsed.success) {
       return errorResponse(400, "VALIDATION_ERROR", "Invalid tale payload", {
         issues: parsed.error.issues,
