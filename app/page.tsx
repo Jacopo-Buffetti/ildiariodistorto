@@ -3,8 +3,9 @@ import Footer from "@/Components/Footer/Footer";
 import HomeLatestWritings from "@/Components/HomeLatestWritings/HomeLatestWritings";
 import PageHero from "@/Components/PageHero/PageHero";
 import HomeQuoteBox from "@/Components/HomeQuoteBox/HomeQuoteBox";
+import mongoose from "mongoose";
 
-import { Tale } from "@/api/Models/Tales";
+import { getTales } from "@/api/controllers/tales-db";
 
 const fallbackImages = [
   "/assets/piuma_tavolo.png",
@@ -24,12 +25,22 @@ function truncateText(value: string, maxLength: number = 140) {
   return `${truncated.trim()}...`;
 }
 
-function toHomeCard(item: any, index: number) {
+type HomeTale = {
+  id?: string;
+  _id?: string | mongoose.Types.ObjectId;
+  title?: string | null;
+  description?: string;
+  CoverImage?: {
+    url?: string;
+  };
+};
+
+function toHomeCard(item: HomeTale, index: number) {
   const imageUrl =
     item.CoverImage?.url || fallbackImages[index % fallbackImages.length];
   const typeText = item.description || "Scritto";
   const titleText = truncateText(item.title?.trim() || "Senza titolo", 44);
-  const taleId = item.id ?? item._id ?? `card-${index}`;
+  const taleId = item.id ?? item._id?.toString() ?? `card-${index}`;
   const key = taleId;
   return {
     key,
@@ -41,18 +52,18 @@ function toHomeCard(item: any, index: number) {
 }
 
 async function getHomeCards() {
-  // Fetch direttamente dal backend
-  const res = await fetch(
-    process.env.NEXT_PUBLIC_SITE_URL
-      ? `${process.env.NEXT_PUBLIC_SITE_URL}/api/tales?page=1&limit=100`
-      : "http://localhost:3000/api/tales?page=1&limit=100",
-    { next: { revalidate: 60 } }
-  );
-  const payload = await res.json();
-  if (!res.ok || payload.error) {
+  const tales = await getTales({
+    page: 1,
+    limit: 100,
+    sortBy: "createdAt",
+    sort: "asc",
+  });
+
+  if ("error" in tales) {
     return [];
   }
-  return Array.isArray(payload.data) ? payload.data.map(toHomeCard) : [];
+
+  return Array.isArray(tales.data) ? tales.data.map(toHomeCard) : [];
 }
 
 export default async function Home() {
