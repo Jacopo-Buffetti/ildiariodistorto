@@ -1,6 +1,7 @@
 import Link from "next/link";
 import SketchFrame from "@/Components/SketchFrame/SketchFrame";
 import { stripHtml } from "@/utils/html-text";
+import { truncate } from "@/Helpers/helpers";
 
 type HomeCard = {
   key: string;
@@ -9,13 +10,6 @@ type HomeCard = {
   typeText: string;
   titleText: string;
 };
-
-export function truncate(text: string, maxLength: number): string {
-  if (text.length <= maxLength) {
-    return text;
-  }
-  return `${text.slice(0, maxLength).trim()}...`;
-}
 
 export default function WritingCard({ card }: { card: HomeCard }) {
   return (
