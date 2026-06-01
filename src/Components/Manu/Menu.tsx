@@ -11,7 +11,7 @@ type MenuItem = {
 
 const MENU_ITEMS: MenuItem[] = [
   { label: "HOME", href: "/", active: true },
-  { label: "CHI SONO", href: "/chi-sono" },
+  { label: "I MIEI SCRITTI", href: "/i-miei-scritti" },
 ];
 
 export default function Menu() {

@@ -25,12 +25,12 @@ export default function HomeLatestWritings({
           id="ultimi-scritti"
           className="blockquote text-4xl font-semibold uppercase tracking-[0.18em] text-zinc-800"
         >
-          I miei scritti
+          Grovigli di parole
         </h2>
         <div className="mx-auto mt-4 h-[2px] w-20 bg-zinc-400" />
       </header>
 
-      <div className="mx-auto grid max-w-[1200px] grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mx-auto grid max-w-[1200px] grid-cols-1 items-stretch gap-8 sm:grid-cols-2 lg:grid-cols-3 lg:auto-rows-fr">
         {homeCards.length > 0 ? (
           homeCards.map((card) => <WritingCard key={card.key} card={card} />)
         ) : (

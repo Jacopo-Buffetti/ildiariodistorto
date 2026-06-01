@@ -1,9 +1,25 @@
+"use client";
+
 import Footer from "@/Components/Footer/Footer";
 import Menu from "@/Components/Manu/Menu";
 import SketchFrame from "@/Components/SketchFrame/SketchFrame";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function ChiSono() {
+  const router = useRouter();
+
+  const goToWritings = () => {
+    router.push("/i-miei-scritti#ultimi-scritti");
+  };
+
+  const handleBoxKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      goToWritings();
+    }
+  };
+
   return (
     <>
       <Menu />
@@ -29,7 +45,8 @@ export default function ChiSono() {
 
             <div className="min-w-0 space-y-4 text-base leading-8 text-zinc-700 sm:text-lg">
               <p>
-                Mi chiamo <strong>Jacopo</strong>. <br />
+                Mi chiamo <strong>Jacopo</strong>, per gli amici{" "}
+                <strong>Ciccio</strong>. <br />
                 Sono un Capricorno, ma non so se questo dica davvero qualcosa di
                 me. Forse solo che vedo montagne interiori che nessun'altro
                 vede, e che ho quella ostinazione che nasce non dalla forza, ma
@@ -94,52 +111,109 @@ export default function ChiSono() {
             </h2>
 
             <div className="mt-8 grid gap-8 sm:grid-cols-3">
-              <article className="flex flex-col items-center">
-                <Image
-                  src="/assets/piuma_tavolo.png"
-                  alt="Icona poesie"
-                  width={500}
-                  height={500}
-                  className="object-contain rounded-[20px]"
-                />
-                <h3 className="mt-3 text-lg font-semibold text-zinc-800">
-                  Poesie
-                </h3>
-                <p className="mt-2 max-w-[18ch] text-sm leading-6 text-zinc-600">
-                  Emozioni in versi, sussurri dell&apos;anima.
-                </p>
+              <article className="rounded-[20px] p-3">
+                <div className="relative z-[1] flex flex-col items-center">
+                  <div
+                    className="flex cursor-pointer items-center justify-center group relative w-full max-w-[310px] aspect-square overflow-hidden rounded-[20px]"
+                    role="button"
+                    tabIndex={0}
+                    onClick={goToWritings}
+                    onKeyDown={handleBoxKeyDown}
+                    aria-label="Vai alla sezione Grovigli di parole"
+                  >
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                    >
+                      <SketchFrame className="h-full w-full aspect-square">
+                        {null}
+                      </SketchFrame>
+                    </div>
+                    <Image
+                      src="/assets/piuma_tavolo.png"
+                      alt="Icona poesie"
+                      width={500}
+                      height={500}
+                      className="block h-full w-full object-cover rounded-[20px] max-w-[280px] max-h-[280px]"
+                    />
+                  </div>
+                  <h3 className="mt-3 text-lg font-semibold text-zinc-800">
+                    Poesie
+                  </h3>
+                  <p className="mt-2 max-w-[18ch] text-sm leading-6 text-zinc-600">
+                    Emozioni in versi, sussurri dell&apos;anima.
+                  </p>
+                </div>
               </article>
 
-              <article className="flex flex-col items-center">
-                <Image
-                  src="/assets/taccuino.png"
-                  alt="Icona racconti brevi"
-                  width={500}
-                  height={500}
-                  className="object-contain rounded-[20px]"
-                />
-                <h3 className="mt-3 text-lg font-semibold text-zinc-800">
-                  Racconti brevi
-                </h3>
-                <p className="mt-2 max-w-[19ch] text-sm leading-6 text-zinc-600">
-                  Storie di vita, ordinarie o non.
-                </p>
+              <article className="rounded-[20px] p-3">
+                <div className="relative z-[1] flex flex-col items-center">
+                  <div
+                    className="flex cursor-pointer items-center justify-center group relative w-full max-w-[310px] aspect-square overflow-hidden rounded-[20px]"
+                    role="button"
+                    tabIndex={0}
+                    onClick={goToWritings}
+                    onKeyDown={handleBoxKeyDown}
+                    aria-label="Vai alla sezione Grovigli di parole"
+                  >
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                    >
+                      <SketchFrame className="h-full w-full aspect-square">
+                        {null}
+                      </SketchFrame>
+                    </div>
+                    <Image
+                      src="/assets/taccuino.png"
+                      alt="Icona racconti brevi"
+                      width={500}
+                      height={500}
+                      className="block h-full w-full object-cover rounded-[20px] max-w-[280px] max-h-[280px]"
+                    />
+                  </div>
+                  <h3 className="mt-3 text-lg font-semibold text-zinc-800">
+                    Racconti brevi
+                  </h3>
+                  <p className="mt-2 max-w-[19ch] text-sm leading-6 text-zinc-600">
+                    Storie di vita, ordinarie o non.
+                  </p>
+                </div>
               </article>
 
-              <article className="flex flex-col items-center">
-                <Image
-                  src="/assets/candela.png"
-                  alt="Icona pensieri"
-                  width={500}
-                  height={500}
-                  className="object-contain rounded-[20px]"
-                />
-                <h3 className="mt-3 text-lg font-semibold text-zinc-800">
-                  Pensieri
-                </h3>
-                <p className="mt-2 max-w-[20ch] text-sm leading-6 text-zinc-600">
-                  Riflessioni sparse, appunti di viaggio.
-                </p>
+              <article className="rounded-[20px] p-3">
+                <div className="relative z-[1] flex flex-col items-center">
+                  <div
+                    className="flex cursor-pointer items-center justify-center group relative w-full max-w-[310px] aspect-square overflow-hidden rounded-[20px]"
+                    role="button"
+                    tabIndex={0}
+                    onClick={goToWritings}
+                    onKeyDown={handleBoxKeyDown}
+                    aria-label="Vai alla sezione Grovigli di parole"
+                  >
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                    >
+                      <SketchFrame className="h-full w-full aspect-square">
+                        {null}
+                      </SketchFrame>
+                    </div>
+                    <Image
+                      src="/assets/candela.png"
+                      alt="Icona pensieri"
+                      width={500}
+                      height={500}
+                      className="block h-full w-full object-cover rounded-[20px] max-w-[280px] max-h-[280px]"
+                    />
+                  </div>
+                  <h3 className="mt-3 text-lg font-semibold text-zinc-800">
+                    Pensieri
+                  </h3>
+                  <p className="mt-2 max-w-[20ch] text-sm leading-6 text-zinc-600">
+                    Riflessioni sparse, appunti di viaggio.
+                  </p>
+                </div>
               </article>
             </div>
           </section>
