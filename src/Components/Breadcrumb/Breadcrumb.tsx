@@ -10,10 +10,10 @@ export default function Breadcrumb({ currentTitle }: BreadcrumbProps) {
       <ol className="flex flex-wrap items-center gap-2">
         <li>
           <Link
-            href="/"
+            href="/i-miei-scritti"
             className="transition hover:text-zinc-900 hover:underline"
           >
-            Home
+            I miei scritti
           </Link>
         </li>
         <li aria-hidden="true" className="text-zinc-400">
