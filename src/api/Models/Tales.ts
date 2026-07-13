@@ -18,17 +18,16 @@ interface Itale extends Omit<TaleType, "id" | "role"> {
 }
 
 const TaleMongooseSchema = new Schema<Itale>(
-    {
-        title: { type: String, required: true },
-        description: { type: String, required: true },
-        order: { type: Number, default: 0 },
-        type: { type: String },
-        CoverImage: {
-            url: String,
-            path: String,
-            relativePath: String,
-            name: String,
-        }
+  {
+    title: { type: String, required: true },
+    description: { type: String, required: true },
+    order: { type: Number, default: 0 },
+    type: { type: String },
+    CoverImage: {
+      url: String,
+      path: String,
+      relativePath: String,
+      name: String,
     },
   },
   {
