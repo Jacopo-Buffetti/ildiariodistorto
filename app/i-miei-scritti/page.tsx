@@ -4,8 +4,10 @@ import HomeLatestWritings from "@/Components/HomeLatestWritings/HomeLatestWritin
 import PageHero from "@/Components/PageHero/PageHero";
 import HomeQuoteBox from "@/Components/HomeQuoteBox/HomeQuoteBox";
 import mongoose from "mongoose";
-
 import { getTales } from "@/api/controllers/tales-db";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 const fallbackImages = [
   "/assets/piuma_tavolo.png",
