@@ -106,7 +106,7 @@ export default function TableWritings() {
     setItemsOrder(mappedWritings.map((w) => w.rowId));
   }, [mappedWritings]);
 
-  const handleDragEnd = (event: any) => {
+  const handleDragEnd = async (event: any) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
     const oldIndex = itemsOrder.indexOf(String(active.id));
@@ -121,7 +121,27 @@ export default function TableWritings() {
       return newOrder.map((id) => map.get(id)!).filter(Boolean) as Tale[];
     });
 
-    // TODO: persist new order to server with PUT
+    // Persist moved item's new order to server
+    const movedId = String(active.id);
+    const movedOrder = newIndex; // 0-based index
+    try {
+      const res = await fetch(`/api/tales`, {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: movedId, order: movedOrder }),
+      });
+      const resp = await res.json().catch(() => ({}));
+      if (!res.ok || resp?.error) {
+        setError(
+          resp?.error
+            ? `Errore salvataggio ordine: ${String(resp.error)}`
+            : "Errore salvataggio ordine"
+        );
+      }
+    } catch (e) {
+      setError("Errore di rete durante il salvataggio dell'ordine");
+    }
   };
 
   function SortableRow({ writing }: { writing: Tale & { rowId: string } }) {
