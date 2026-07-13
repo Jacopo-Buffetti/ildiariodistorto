@@ -121,15 +121,14 @@ export default function TableWritings() {
       return newOrder.map((id) => map.get(id)!).filter(Boolean) as Tale[];
     });
 
-    // Persist moved item's new order to server
-    const movedId = String(active.id);
-    const movedOrder = newIndex; // 0-based index
+    // Persist full order to server: send array [{id, order}]
+    const payload = newOrder.map((id, idx) => ({ id, order: idx }));
     try {
       const res = await fetch(`/api/tales`, {
         method: "PUT",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: movedId, order: movedOrder }),
+        body: JSON.stringify(payload),
       });
       const resp = await res.json().catch(() => ({}));
       if (!res.ok || resp?.error) {
