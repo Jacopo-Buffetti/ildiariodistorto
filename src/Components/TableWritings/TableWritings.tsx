@@ -1,8 +1,15 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { DragDropManager, Draggable } from "@dnd-kit/dom";
+import { DndContext, closestCenter } from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal/ConfirmDeleteModal";
 import { CreateTaleSchema } from "@/schemas/tales";
@@ -92,74 +99,79 @@ export default function TableWritings() {
     router.push(`/area-riservata/modifica/${encodeURIComponent(rowId)}`);
   };
 
-  // Drag & drop (make table rows draggable) using @dnd-kit/dom
-  const managerRef = useRef<null | any>(null);
-  const draggablesRef = useRef<Record<string, any>>({});
+  // Sortable drag & drop using @dnd-kit/core + @dnd-kit/sortable
+  const [itemsOrder, setItemsOrder] = useState<string[]>([]);
 
   useEffect(() => {
-    // create manager once on mount
-    managerRef.current = new DragDropManager();
-    return () => {
-      // cleanup draggables
-      Object.keys(draggablesRef.current).forEach((key) => {
-        try {
-          draggablesRef.current[key]?.destroy?.();
-        } catch {
-          // ignore
-        }
-        delete draggablesRef.current[key];
-      });
-      managerRef.current = null;
-    };
-  }, []);
+    setItemsOrder(mappedWritings.map((w) => w.rowId));
+  }, [mappedWritings]);
 
-  const registerDraggable = (el: HTMLTableRowElement | null, id: string) => {
-    const manager = managerRef.current;
-    if (!id) return;
+  const handleDragEnd = (event: any) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIndex = itemsOrder.indexOf(String(active.id));
+    const newIndex = itemsOrder.indexOf(String(over.id));
+    if (oldIndex === -1 || newIndex === -1) return;
+    const newOrder = arrayMove(itemsOrder, oldIndex, newIndex);
+    setItemsOrder(newOrder);
 
-    // if element is unmounted, destroy existing draggable
-    if (!el) {
-      const existing = draggablesRef.current[id];
-      if (existing) {
-        try {
-          existing.destroy?.();
-        } catch {}
-        delete draggablesRef.current[id];
-      }
-      return;
-    }
+    // reorder writings state to match newOrder
+    setWritings((prev) => {
+      const map = new Map(prev.map((p) => [p.id ?? p._id ?? "", p]));
+      return newOrder.map((id) => map.get(id)!).filter(Boolean) as Tale[];
+    });
 
-    // if already registered with same element, skip
-    if (draggablesRef.current[id] && draggablesRef.current[id].element === el) {
-      return;
-    }
-
-    // destroy previous if present
-    if (draggablesRef.current[id]) {
-      try {
-        draggablesRef.current[id].destroy?.();
-      } catch {}
-      delete draggablesRef.current[id];
-    }
-
-    if (!manager) return;
-
-    try {
-      const draggable = new Draggable({ id, element: el }, manager);
-      // some lightweight affordances
-      el.style.touchAction = "none";
-      el.style.userSelect = "none";
-      el.style.cursor = "grab";
-      el.setAttribute("data-draggable-id", id);
-      draggablesRef.current[id] = draggable;
-    } catch (e) {
-      // fail silently if API differs
-      // as a fallback, make native draggable to at least allow move
-      try {
-        el.setAttribute("draggable", "true");
-      } catch {}
-    }
+    // TODO: persist new order to server with PUT
   };
+
+  function SortableRow({ writing }: { writing: Tale & { rowId: string } }) {
+    const { attributes, listeners, setNodeRef, transform, transition } =
+      useSortable({ id: writing.rowId });
+    const style: React.CSSProperties = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+      touchAction: "none",
+      userSelect: "none",
+      cursor: "grab",
+    };
+
+    return (
+      <tr ref={setNodeRef} style={style} {...attributes} {...listeners}>
+        <td className="px-4 py-2 text-black">
+          {writing.title || "(senza titolo)"}
+        </td>
+        <td className="px-4 py-2 text-black">Scritto</td>
+        <td className="px-4 py-2 text-black">
+          {formatDate(writing.createdAt)}
+        </td>
+        <td className="px-4 py-2 text-black">
+          {formatDate(writing.updatedAt)}
+        </td>
+        <td className="px-4 py-2 text-black">
+          <div className="flex gap-2">
+            <button
+              className="text-black disabled:opacity-50"
+              title="Modifica"
+              disabled={workingId === writing.rowId}
+              onClick={() => void handleEdit(writing)}
+              type="button"
+            >
+              ✏️
+            </button>
+            <button
+              className="text-black disabled:opacity-50"
+              title="Elimina"
+              disabled={workingId === writing.rowId}
+              onClick={() => setPendingDelete(writing)}
+              type="button"
+            >
+              🗑️
+            </button>
+          </div>
+        </td>
+      </tr>
+    );
+  }
 
   const confirmDelete = async (item: Tale & { rowId: string }) => {
     const rowId = item.rowId;
@@ -248,42 +260,25 @@ export default function TableWritings() {
               </td>
             </tr>
           )}
-          {mappedWritings.map((writing) => (
-            <tr key={writing.rowId || writing.title || writing.description}>
-              <td className="px-4 py-2 text-black">
-                {writing.title || "(senza titolo)"}
-              </td>
-              <td className="px-4 py-2 text-black">Scritto</td>
-              <td className="px-4 py-2 text-black">
-                {formatDate(writing.createdAt)}
-              </td>
-              <td className="px-4 py-2 text-black">
-                {formatDate(writing.updatedAt)}
-              </td>
-              <td className="px-4 py-2 text-black">
-                <div className="flex gap-2">
-                  <button
-                    className="text-black disabled:opacity-50"
-                    title="Modifica"
-                    disabled={workingId === writing.rowId}
-                    onClick={() => void handleEdit(writing)}
-                    type="button"
-                  >
-                    ✏️
-                  </button>
-                  <button
-                    className="text-black disabled:opacity-50"
-                    title="Elimina"
-                    disabled={workingId === writing.rowId}
-                    onClick={() => setPendingDelete(writing)}
-                    type="button"
-                  >
-                    🗑️
-                  </button>
-                </div>
-              </td>
-            </tr>
-          ))}
+
+          {!loading && mappedWritings.length > 0 && (
+            <DndContext
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={itemsOrder}
+                strategy={verticalListSortingStrategy}
+              >
+                {mappedWritings.map((writing) => (
+                  <SortableRow
+                    key={writing.rowId || writing.title || writing.description}
+                    writing={writing as Tale & { rowId: string }}
+                  />
+                ))}
+              </SortableContext>
+            </DndContext>
+          )}
         </tbody>
       </table>
       <ConfirmDeleteModal

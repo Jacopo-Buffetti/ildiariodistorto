@@ -1,5 +1,8 @@
 import TableWritings from "@/Components/TableWritings/TableWritings";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default function Dashboard() {
   return (
     <section>
