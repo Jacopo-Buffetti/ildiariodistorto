@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { DragDropManager, Draggable } from "@dnd-kit/dom";
 
 import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal/ConfirmDeleteModal";
 import { CreateTaleSchema } from "@/schemas/tales";
@@ -58,10 +59,13 @@ export default function TableWritings() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/tales?page=1&limit=100&sort=updatedAt&sortBy=asc", {
-        method: "GET",
-        credentials: "include",
-      });
+      const res = await fetch(
+        "/api/tales?page=1&limit=100&sort=updatedAt&sortBy=asc",
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
       const data = (await res.json()) as TalesResponse;
       if (!res.ok || data.error) {
         setError("Impossibile caricare gli scritti");
@@ -86,6 +90,75 @@ export default function TableWritings() {
       return;
     }
     router.push(`/area-riservata/modifica/${encodeURIComponent(rowId)}`);
+  };
+
+  // Drag & drop (make table rows draggable) using @dnd-kit/dom
+  const managerRef = useRef<null | any>(null);
+  const draggablesRef = useRef<Record<string, any>>({});
+
+  useEffect(() => {
+    // create manager once on mount
+    managerRef.current = new DragDropManager();
+    return () => {
+      // cleanup draggables
+      Object.keys(draggablesRef.current).forEach((key) => {
+        try {
+          draggablesRef.current[key]?.destroy?.();
+        } catch {
+          // ignore
+        }
+        delete draggablesRef.current[key];
+      });
+      managerRef.current = null;
+    };
+  }, []);
+
+  const registerDraggable = (el: HTMLTableRowElement | null, id: string) => {
+    const manager = managerRef.current;
+    if (!id) return;
+
+    // if element is unmounted, destroy existing draggable
+    if (!el) {
+      const existing = draggablesRef.current[id];
+      if (existing) {
+        try {
+          existing.destroy?.();
+        } catch {}
+        delete draggablesRef.current[id];
+      }
+      return;
+    }
+
+    // if already registered with same element, skip
+    if (draggablesRef.current[id] && draggablesRef.current[id].element === el) {
+      return;
+    }
+
+    // destroy previous if present
+    if (draggablesRef.current[id]) {
+      try {
+        draggablesRef.current[id].destroy?.();
+      } catch {}
+      delete draggablesRef.current[id];
+    }
+
+    if (!manager) return;
+
+    try {
+      const draggable = new Draggable({ id, element: el }, manager);
+      // some lightweight affordances
+      el.style.touchAction = "none";
+      el.style.userSelect = "none";
+      el.style.cursor = "grab";
+      el.setAttribute("data-draggable-id", id);
+      draggablesRef.current[id] = draggable;
+    } catch (e) {
+      // fail silently if API differs
+      // as a fallback, make native draggable to at least allow move
+      try {
+        el.setAttribute("draggable", "true");
+      } catch {}
+    }
   };
 
   const confirmDelete = async (item: Tale & { rowId: string }) => {
@@ -138,6 +211,8 @@ export default function TableWritings() {
       setWorkingId(null);
     }
   };
+
+  // TODO fare la PUT per il reorder degli scritti, con un drag and drop della tabella
 
   return (
     <div className="overflow-x-auto rounded border border-zinc-200 bg-white shadow">
