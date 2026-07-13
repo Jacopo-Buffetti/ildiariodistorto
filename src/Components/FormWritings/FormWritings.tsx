@@ -11,6 +11,7 @@ type TaleResponse = {
   id?: string;
   _id?: string;
   title?: string | null;
+  type?: string;
   description?: string;
   CoverImage?: CoverImage;
   error?: unknown;
@@ -60,6 +61,7 @@ export default function FormWritings({
         }
 
         setTitolo(data.title ?? "");
+        setTipo(data.type ?? "Poesia");
         setContenuto(data.description ?? "");
         setCoverImage(data.CoverImage);
         setCopertinaName(data.CoverImage?.name ?? "");
