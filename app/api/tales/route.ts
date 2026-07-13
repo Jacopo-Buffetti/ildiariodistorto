@@ -31,7 +31,11 @@ export async function PUT(
     req: NextRequest,
 ): Promise<NextResponse> {
     try {
-        const { talesOrder } = await req.json() as { talesOrder: { id: string, order: number }[] };
+        const talesOrder = await req.json() as { id: string, order: number }[];
+        if (!talesOrder) {
+            return errorResponse(500, "RESOURCE_ERROR", "Could not reorder tales");
+        }
+
         const isAuth = await getLevel(req, "admin");
         if (!isAuth) {
             return errorResponse(401, "UNAUTHORIZED", "You are not authorised");
