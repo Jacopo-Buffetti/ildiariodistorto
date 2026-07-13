@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Editor } from "@hugerte/hugerte-react";
 import type { TaleImage } from "@/schemas/tales";
+import { TALE_FORM_KEYS } from "@/schemas/tales";
 
 type CoverImage = TaleImage;
 
@@ -87,9 +88,9 @@ export default function FormWritings({
     )?.files?.[0];
 
     const formData = new FormData();
-    formData.append("title", titolo);
-    formData.append("type", tipo);
-    formData.append("description", contenuto);
+    formData.append(TALE_FORM_KEYS.title, titolo);
+    formData.append(TALE_FORM_KEYS.tipo, tipo);
+    formData.append(TALE_FORM_KEYS.description, contenuto);
     if (copertinaInput && copertinaInput.size > 0) {
       formData.append("CoverImage", copertinaInput, copertinaInput.name);
       formData.append("fileName", copertinaInput.name);

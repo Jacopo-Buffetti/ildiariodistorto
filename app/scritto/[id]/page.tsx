@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 
+import Breadcrumb from "@/Components/Breadcrumb/Breadcrumb";
 import Footer from "@/Components/Footer/Footer";
 import Menu from "@/Components/Manu/Menu";
 import { getTale } from "@/api/controllers/tales-db";
@@ -77,6 +78,7 @@ export default async function ScrittoPage({
     <>
       <Menu />
       <main className="mx-auto w-full max-w-[980px] px-6 pb-14 pt-10 sm:px-10 sm:pt-14">
+        <Breadcrumb currentTitle={title} />
         <article className="bg-white p-6 sm:p-10">
           <img
             src={coverImageUrl}
