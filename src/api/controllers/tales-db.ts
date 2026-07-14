@@ -148,20 +148,32 @@ export async function deleteTale(id: string) {
 export async function reorderTales(updates: ReorderItem[]) {
   if (!updates.length) return;
   try {
+    await connectDB();
+
+    const hasInvalidIds = updates.some(
+      ({ id }) => !mongoose.Types.ObjectId.isValid(id)
+    );
+    if (hasInvalidIds) {
+      return { error: { message: "One or more tale IDs are invalid" } };
+    }
+
     const tale = await Tale.bulkWrite(
-        updates.map(({id, order}) => ({
-          updateOne: {
-            filter: {_id: new mongoose.Types.ObjectId(id)},
-            update: {$set: {order}},
-          },
-        }))
+      updates.map(({ id, order }) => ({
+        updateOne: {
+          filter: { _id: new mongoose.Types.ObjectId(id) },
+          update: { $set: { order } },
+        },
+      }))
     );
     if (tale) {
-      return {message: "Tale order updated"};
+      return { message: "Tale order updated" };
     } else {
-      return {error: {message: "Tale order not updated found"}};
+      return { error: { message: "Tale order not updated found" } };
     }
   } catch (error) {
-    return {error};
+    return {
+      error:
+        error instanceof Error ? { message: error.message, name: error.name } : error,
+    };
   }
 }

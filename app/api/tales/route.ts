@@ -32,8 +32,8 @@ export async function PUT(
 ): Promise<NextResponse> {
     try {
         const talesOrder = await req.json() as { id: string, order: number }[];
-        if (!talesOrder) {
-            return errorResponse(500, "RESOURCE_ERROR", "Could not reorder tales");
+        if (!Array.isArray(talesOrder)) {
+            return errorResponse(400, "VALIDATION_ERROR", "Invalid reorder payload");
         }
 
         const isAuth = await getLevel(req, "admin");
@@ -46,7 +46,7 @@ export async function PUT(
             return errorResponse(500, "RESOURCE_ERROR", "Could not reorder tales");
         }
         if ("error" in tales) {
-            return errorResponse(500, "RESOURCE_ERROR", "Could not fetch tales", {
+            return errorResponse(500, "RESOURCE_ERROR", "Could not reorder tales", {
                 cause: tales.error,
             });
         }
