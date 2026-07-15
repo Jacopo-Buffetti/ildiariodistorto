@@ -75,7 +75,7 @@ async function getHomeCards() {
   const tales = await getTales({
     page: 1,
     limit: 100,
-    sortBy: "createdAt",
+    sortBy: "order",
     sort: "asc",
   });
 
