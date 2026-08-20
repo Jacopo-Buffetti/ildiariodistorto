@@ -35,6 +35,7 @@ type HomeTale = {
   CoverImage?: {
     url?: string;
   };
+  type?: string | null;
 };
 
 function resolveTaleId(
@@ -59,7 +60,8 @@ function resolveTaleId(
 function toHomeCard(item: HomeTale, index: number) {
   const imageUrl =
     item.CoverImage?.url || fallbackImages[index % fallbackImages.length];
-  const typeText = item.description || "Scritto";
+  const typeText =
+    item.description || (item.type && item.type.trim()) || "Scritto";
   const titleText = truncateText(item.title?.trim() || "Senza titolo", 44);
   const { taleId, key } = resolveTaleId(item, index);
   return {
@@ -67,6 +69,7 @@ function toHomeCard(item: HomeTale, index: number) {
     taleId,
     imageUrl,
     typeText,
+    type: item.type ?? null,
     titleText,
   };
 }

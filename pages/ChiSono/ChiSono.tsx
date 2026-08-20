@@ -9,16 +9,19 @@ import { useRouter } from "next/navigation";
 export default function ChiSono() {
   const router = useRouter();
 
-  const goToWritings = () => {
-    router.push("/i-miei-scritti#ultimi-scritti");
+  const navigateTo = (type?: string) => {
+    const hash = "#ultimi-scritti";
+    const query = type ? `?type=${encodeURIComponent(type)}` : "";
+    router.push(`/i-miei-scritti${query}${hash}`);
   };
 
-  const handleBoxKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      goToWritings();
-    }
-  };
+  const handleBoxKeyDown =
+    (type?: string) => (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        navigateTo(type);
+      }
+    };
 
   return (
     <>
@@ -117,8 +120,8 @@ export default function ChiSono() {
                     className="flex cursor-pointer items-center justify-center group relative w-full max-w-[310px] aspect-square overflow-hidden rounded-[20px]"
                     role="button"
                     tabIndex={0}
-                    onClick={goToWritings}
-                    onKeyDown={handleBoxKeyDown}
+                    onClick={() => navigateTo("Poesia")}
+                    onKeyDown={handleBoxKeyDown("Poesia")}
                     aria-label="Vai alla sezione Grovigli di parole"
                   >
                     <div
@@ -152,8 +155,8 @@ export default function ChiSono() {
                     className="flex cursor-pointer items-center justify-center group relative w-full max-w-[310px] aspect-square overflow-hidden rounded-[20px]"
                     role="button"
                     tabIndex={0}
-                    onClick={goToWritings}
-                    onKeyDown={handleBoxKeyDown}
+                    onClick={() => navigateTo("Racconto breve")}
+                    onKeyDown={handleBoxKeyDown("Racconto breve")}
                     aria-label="Vai alla sezione Grovigli di parole"
                   >
                     <div
@@ -187,8 +190,8 @@ export default function ChiSono() {
                     className="flex cursor-pointer items-center justify-center group relative w-full max-w-[310px] aspect-square overflow-hidden rounded-[20px]"
                     role="button"
                     tabIndex={0}
-                    onClick={goToWritings}
-                    onKeyDown={handleBoxKeyDown}
+                    onClick={() => navigateTo("Pensiero")}
+                    onKeyDown={handleBoxKeyDown("Pensiero")}
                     aria-label="Vai alla sezione Grovigli di parole"
                   >
                     <div
