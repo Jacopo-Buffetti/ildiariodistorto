@@ -36,6 +36,7 @@ type HomeTale = {
     url?: string;
   };
   type?: string | null;
+  published?: boolean;
 };
 
 function resolveTaleId(
@@ -86,7 +87,11 @@ async function getHomeCards() {
     return [];
   }
 
-  return Array.isArray(tales.data) ? tales.data.map(toHomeCard) : [];
+  if (!Array.isArray(tales.data)) return [];
+
+  // Only include tales explicitly published === true
+  const visible = tales.data.filter((item) => item.published === true);
+  return visible.map(toHomeCard);
 }
 
 export default async function IMieiScrittiPage() {

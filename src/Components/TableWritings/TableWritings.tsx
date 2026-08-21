@@ -43,6 +43,8 @@ type Tale = {
   _id?: string;
   title?: string | null;
   description: string;
+  type?: string | null;
+  published?: boolean | null;
   CoverImage?: {
     url: string;
     path: string;
@@ -110,6 +112,7 @@ function SortableRow({
   };
 
   const isWorking = workingId === writing.rowId;
+  console.log(writing);
 
   return (
     <tr
@@ -152,7 +155,15 @@ function SortableRow({
         </div>
       </td>
 
-      <td className="px-4 py-2 text-black">Scritto</td>
+      <td className="px-4 py-2 text-black">{writing.type || "(vuoto)"}</td>
+
+      <td className="px-4 py-2 text-black">
+        {writing.published != null
+          ? writing.published
+            ? "Sì"
+            : "No"
+          : "(vuoto)"}
+      </td>
 
       <td className="px-4 py-2 text-black">{formatDate(writing.createdAt)}</td>
 
@@ -531,6 +542,10 @@ export default function TableWritings() {
 
                 <th className="px-4 py-2 text-left font-bold text-black">
                   TIPO
+                </th>
+
+                <th className="px-4 py-2 text-left font-bold text-black">
+                  PUBBLICATO
                 </th>
 
                 <th className="px-4 py-2 text-left font-bold text-black">

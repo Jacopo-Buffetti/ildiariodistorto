@@ -16,6 +16,7 @@ type TaleResponse = {
   description?: string;
   CoverImage?: CoverImage;
   error?: unknown;
+  published?: boolean;
 };
 
 type FormWritingsProps = {
@@ -39,6 +40,7 @@ export default function FormWritings({
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(false);
+  const [published, setPublished] = useState(true);
 
   useEffect(() => {
     const loadTale = async () => {
@@ -58,6 +60,7 @@ export default function FormWritings({
           credentials: "include",
         });
         const data = (await res.json()) as TaleResponse;
+        console.log("Fetched tale data:", data);
         if (!res.ok || data.error) {
           setError("Impossibile caricare lo scritto da modificare");
           return;
@@ -66,6 +69,9 @@ export default function FormWritings({
         setTitolo(data.title ?? "");
         setTipo(data.type ?? "Poesia");
         setContenuto(data.description ?? "");
+        setPublished(
+          typeof data.published === "boolean" ? data.published : true
+        );
         setCoverImage(data.CoverImage);
         setCopertinaName(data.CoverImage?.name ?? "");
         setCoverPreview(data.CoverImage?.url ?? undefined);
@@ -106,6 +112,7 @@ export default function FormWritings({
     formData.append(TALE_FORM_KEYS.title, titolo);
     formData.append(TALE_FORM_KEYS.tipo, tipo);
     formData.append(TALE_FORM_KEYS.description, contenuto);
+    formData.append(TALE_FORM_KEYS.published, String(published));
     if (copertinaInput && copertinaInput.size > 0) {
       formData.append("CoverImage", copertinaInput, copertinaInput.name);
       formData.append("fileName", copertinaInput.name);
@@ -243,6 +250,45 @@ export default function FormWritings({
           />
         </div>
         <input type="hidden" name="contenuto" value={contenuto} readOnly />
+        <div className="mt-4">
+          <div className="flex items-center justify-between">
+            <label className="inline-flex items-center cursor-pointer gap-3">
+              <span className="text-sm font-medium text-zinc-700">
+                Pubblicato
+              </span>
+              <input
+                id="published"
+                name={TALE_FORM_KEYS.published}
+                type="checkbox"
+                checked={published}
+                onChange={(e) => setPublished(e.target.checked)}
+                className="sr-only peer"
+              />
+
+              <div
+                className={`relative w-12 h-6 rounded-full transition-colors duration-200 ease-in-out focus:outline-none ${
+                  published
+                    ? "bg-gradient-to-br from-emerald-500 to-emerald-600"
+                    : "bg-gradient-to-br from-zinc-200 to-zinc-300"
+                }`}
+                aria-hidden
+              >
+                <span
+                  className={`absolute left-0.5 top-0.5 inline-block h-5 w-5 rounded-full bg-white shadow transform transition-transform duration-200 ease-in-out ${
+                    published ? "translate-x-6" : "translate-x-0"
+                  }`}
+                />
+              </div>
+            </label>
+
+            <input
+              type="hidden"
+              name={TALE_FORM_KEYS.published}
+              value={String(published)}
+              readOnly
+            />
+          </div>
+        </div>
       </div>
       <div className="space-y-6">
         <div>
