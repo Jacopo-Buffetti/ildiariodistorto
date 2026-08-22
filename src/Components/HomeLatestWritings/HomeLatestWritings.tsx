@@ -75,12 +75,12 @@ export default function HomeLatestWritings({
         <div className="mx-auto mt-4 h-[2px] w-20 bg-zinc-400" />
       </header>
 
-      <div className="mx-auto max-w-[1200px] mb-6">
+      <div className="mx-auto max-w-[1200px] mb-6 container-filter">
         <SketchFrame className="h-full w-full">
           <div className="rounded-xl bg-white border border-zinc-200 p-6 shadow-sm">
             <div className="flex justify-center">
-              <div className="flex w-full max-w-[760px] items-center gap-6">
-                <div className="flex flex-col">
+              <div className="flex w-full max-w-[760px] flex-col md:flex-row items-center gap-4 md:gap-6">
+                <div className="flex flex-col w-full md:w-auto">
                   <label
                     htmlFor="filter-type"
                     className="mb-2 text-sm text-zinc-600"
@@ -102,7 +102,7 @@ export default function HomeLatestWritings({
                         /* ignore */
                       }
                     }}
-                    className="w-[220px] rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-700"
+                    className="w-full md:w-[220px] rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-700"
                   >
                     <option value="">Tutti i tipi</option>
                     <option value="Pensiero">Pensiero</option>
@@ -111,7 +111,7 @@ export default function HomeLatestWritings({
                   </select>
                 </div>
 
-                <div className="flex-1 flex flex-col">
+                <div className="flex-1 flex flex-col w-full">
                   <label
                     htmlFor="search-title"
                     className="mb-2 text-sm text-zinc-600"
