@@ -23,9 +23,26 @@ const patrickHand = Patrick_Hand({
 });
 
 export const metadata: Metadata = {
-  title: "Il Diario Distorto",
+  metadataBase: new URL("https://ildiariodistorto.vercel.app"),
+  title: {
+    default: "Il Diario Distorto",
+    template: "%s | Il Diario Distorto",
+  },
   description:
     "Il mio sito personale dove condivido i miei scritti, pensieri e progetti.",
+  openGraph: {
+    type: "website",
+    locale: "it_IT",
+    siteName: "Il Diario Distorto",
+    title: "Il Diario Distorto",
+    description:
+      "Il mio sito personale dove condivido i miei scritti, pensieri e progetti.",
+    images: ["/assets/immagine_copertina_home.png"],
+  },
+  verification: {
+    // Passo 4 della guida: incolla qui il codice che ti dà Google Search Console
+    google: "INCOLLA-QUI-IL-CODICE-DI-GOOGLE",
+  },
 };
 
 export default function RootLayout({
@@ -35,7 +52,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="it"
       className={`${poppins.variable} ${geistMono.variable} ${patrickHand.variable} h-full antialiased`}
       suppressHydrationWarning
     >

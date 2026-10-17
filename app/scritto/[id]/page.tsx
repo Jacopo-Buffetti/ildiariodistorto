@@ -1,4 +1,6 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { cache } from "react";
 
 import Breadcrumb from "@/Components/Breadcrumb/Breadcrumb";
 import Footer from "@/Components/Footer/Footer";
@@ -19,6 +21,9 @@ type TaleDetail = {
 };
 
 const fallbackCoverImage = "/assets/taccuino.png";
+
+// Evita di interrogare il database due volte (metadata + pagina)
+const getTaleCached = cache(getTale);
 
 function normalizeCoverSource(value?: string): string | null {
   if (!value) {
@@ -57,13 +62,56 @@ function htmlToPlainText(html: string): string {
     .trim();
 }
 
+function buildDescription(text: string, maxLength: number = 155): string {
+  const singleLine = text.replaceAll(/\s+/g, " ").trim();
+  if (singleLine.length <= maxLength) {
+    return singleLine;
+  }
+  const cut = singleLine.slice(0, maxLength);
+  const lastSpace = cut.lastIndexOf(" ");
+  return `${(lastSpace > 0 ? cut.slice(0, lastSpace) : cut).trim()}...`;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const taleResponse = await getTaleCached(id);
+
+  if (!taleResponse || "error" in taleResponse) {
+    return { title: "Scritto non trovato", robots: { index: false } };
+  }
+
+  const tale = taleResponse as unknown as TaleDetail;
+  const title = (tale.title || "Senza titolo").trim();
+  const description = buildDescription(htmlToPlainText(tale.description || ""));
+  const coverImageUrl = resolveCoverImage(tale);
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: `/scritto/${id}`,
+    },
+    openGraph: {
+      type: "article",
+      title,
+      description,
+      url: `/scritto/${id}`,
+      images: [coverImageUrl],
+    },
+  };
+}
+
 export default async function ScrittoPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const taleResponse = await getTale(id);
+  const taleResponse = await getTaleCached(id);
 
   if (!taleResponse || "error" in taleResponse) {
     notFound();
