@@ -39,10 +39,6 @@ export const metadata: Metadata = {
       "Il mio sito personale dove condivido i miei scritti, pensieri e progetti.",
     images: ["/assets/immagine_copertina_home.png"],
   },
-  verification: {
-    // Passo 4 della guida: incolla qui il codice che ti dà Google Search Console
-    google: "INCOLLA-QUI-IL-CODICE-DI-GOOGLE",
-  },
 };
 
 export default function RootLayout({
