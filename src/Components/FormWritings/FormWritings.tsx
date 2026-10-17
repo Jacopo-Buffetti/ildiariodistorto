@@ -5,6 +5,7 @@ import { Editor } from "@hugerte/hugerte-react";
 import type { TaleImage } from "@/schemas/tales";
 import { TALE_FORM_KEYS } from "@/schemas/tales";
 import { CheckIcon, PhotoIcon } from "@heroicons/react/24/outline";
+import FullPageLoader from "@/Components/FullPageLoader/FullPageLoader";
 
 type CoverImage = TaleImage;
 
@@ -184,12 +185,13 @@ export default function FormWritings({
 
   return (
     <form className="w-full space-y-6" onSubmit={onSubmit}>
-      {loadingData && (
-        <div className="text-zinc-700">Caricamento dati scritto...</div>
-      )}
+      <FullPageLoader show={loadingData} message="Apro lo scritto" />
+      <FullPageLoader
+        show={loading}
+        message={isEditMode ? "Salvo le modifiche" : "Salvo lo scritto"}
+      />
       {error && <div className="text-red-600 font-semibold">{error}</div>}
       {success && <div className="text-green-700 font-semibold">{success}</div>}
-      {loading && <div className="text-zinc-700">Salvataggio in corso...</div>}
       <div>
         <label
           htmlFor="tipo"

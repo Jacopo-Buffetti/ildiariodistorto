@@ -36,6 +36,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal/ConfirmDeleteModal";
+import FullPageLoader from "@/Components/FullPageLoader/FullPageLoader";
 import { CreateTaleSchema } from "@/schemas/tales";
 
 type Tale = {
@@ -521,17 +522,12 @@ export default function TableWritings() {
             </div>
           )}
 
-          {loading && (
-            <div className="px-4 py-3 text-sm text-zinc-700">
-              Caricamento scritti...
-            </div>
-          )}
-
-          {savingOrder && (
-            <div className="px-4 py-2 text-sm text-zinc-600">
-              Salvataggio del nuovo ordine...
-            </div>
-          )}
+          <FullPageLoader show={loading} message="Carico gli scritti" />
+          <FullPageLoader show={savingOrder} message="Salvo il nuovo ordine" />
+          <FullPageLoader
+            show={Boolean(workingId)}
+            message="Elimino lo scritto"
+          />
 
           <table className="min-w-full text-sm">
             <thead className="bg-zinc-100">

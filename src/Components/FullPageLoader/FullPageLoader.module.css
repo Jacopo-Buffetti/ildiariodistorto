@@ -1,0 +1,117 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  cursor: progress;
+  /* compare solo dopo un attimo: se il caricamento è velocissimo non lampeggia */
+  opacity: 0;
+  animation: fadeIn 200ms ease-out 150ms forwards;
+}
+
+.drawing {
+  width: min(240px, 70vw);
+  height: auto;
+  overflow: visible;
+}
+
+.ink {
+  fill: none;
+  stroke: #27272a;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 420;
+  stroke-dashoffset: 420;
+  animation: write 1.8s ease-in-out infinite;
+}
+
+.quill {
+  transform-box: fill-box;
+  transform-origin: 10% 90%;
+  animation: quillMove 1.8s ease-in-out infinite;
+}
+
+.message {
+  margin: 0;
+  font-family: var(--font-quote), "Comic Sans MS", cursive;
+  font-size: clamp(1.25rem, 3vw, 1.6rem);
+  color: #27272a;
+  text-align: center;
+}
+
+.dots::after {
+  content: "";
+  display: inline-block;
+  width: 1.2em;
+  text-align: left;
+  animation: dots 1.2s steps(4, end) infinite;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes write {
+  0% {
+    stroke-dashoffset: 420;
+  }
+  70% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes quillMove {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  35% {
+    transform: translate(70px, -6px) rotate(-6deg);
+  }
+  70% {
+    transform: translate(170px, 4px) rotate(4deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+}
+
+@keyframes dots {
+  0% {
+    content: "";
+  }
+  25% {
+    content: ".";
+  }
+  50% {
+    content: "..";
+  }
+  75% {
+    content: "...";
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ink,
+  .quill,
+  .dots::after {
+    animation: none;
+  }
+  .ink {
+    stroke-dashoffset: 0;
+  }
+}

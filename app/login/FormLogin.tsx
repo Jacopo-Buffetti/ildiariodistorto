@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { useState } from "react";
+
+import FullPageLoader from "@/Components/FullPageLoader/FullPageLoader";
 
 export const FormLogin = () => {
   const router = useRouter();
@@ -11,21 +13,33 @@ export const FormLogin = () => {
     password: "",
   });
   const [formError, setFormError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const result = await signIn("credentials", {
-      email: formValue.email,
-      password: formValue.password,
-      callbackUrl: "/area-riservata",
-      redirect: false,
-    });
+    setFormError("");
+    setSubmitting(true);
 
-    if (!result) {
-      setFormError("Authentication failed");
-    } else if (result.error || !result.ok) {
-      setFormError(result.error ?? "Authentication failed");
-    } else {
-      router.replace("/area-riservata");
+    try {
+      const result = await signIn("credentials", {
+        email: formValue.email,
+        password: formValue.password,
+        callbackUrl: "/area-riservata",
+        redirect: false,
+      });
+
+      if (!result) {
+        setFormError("Authentication failed");
+        setSubmitting(false);
+      } else if (result.error || !result.ok) {
+        setFormError(result.error ?? "Authentication failed");
+        setSubmitting(false);
+      } else {
+        // il loader resta visibile finché non si apre l'area riservata
+        router.replace("/area-riservata");
+      }
+    } catch {
+      setFormError("Errore di rete, riprova");
+      setSubmitting(false);
     }
   };
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,6 +50,7 @@ export const FormLogin = () => {
   };
   return (
     <main className="flex min-h-screen items-center justify-center bg-zinc-50 py-12 px-4">
+      <FullPageLoader show={submitting} message="Accesso in corso" />
       <div className="w-full max-w-md rounded-lg border border-zinc-200 bg-white p-8 shadow-md">
         <div className="mb-6 flex flex-col items-center">
           <span className="mb-2 text-xl font-semibold tracking-wide text-zinc-800">
@@ -55,14 +70,14 @@ export const FormLogin = () => {
               Email
             </label>
             <input
+              required
               id="email"
               name="email"
               type="email"
               autoComplete="email"
-              required
               className="mt-1 w-full rounded border border-zinc-300 px-3 py-2 text-zinc-800 focus:border-zinc-500 focus:outline-none"
-              onChange={onChange}
               value={formValue.email}
+              onChange={onChange}
             />
           </div>
           <div>
@@ -73,18 +88,19 @@ export const FormLogin = () => {
               Password
             </label>
             <input
+              required
               id="password"
               name="password"
               type="password"
               autoComplete="current-password"
-              required
               className="mt-1 w-full rounded border border-zinc-300 px-3 py-2 text-zinc-800 focus:border-zinc-500 focus:outline-none"
-              onChange={onChange}
               value={formValue.password}
+              onChange={onChange}
             />
           </div>
           <button
             type="submit"
+            disabled={submitting}
             className="w-full rounded bg-zinc-800 py-2 text-white font-semibold hover:bg-zinc-700 transition"
           >
             Accedi
