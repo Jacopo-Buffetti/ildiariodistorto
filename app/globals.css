@@ -44,6 +44,12 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
+em,
+i {
+  font-family:
+    var(--font-poppins-italic), var(--font-sans), system-ui, sans-serif;
+}
+
 blockquote,
 q,
 cite,

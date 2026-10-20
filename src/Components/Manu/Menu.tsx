@@ -23,9 +23,9 @@ export default function Menu() {
         <Image
           src="/assets/logo_il_diario_distorto.png"
           alt="Logo Il Diario Distorto"
-          width={150}
-          height={50}
-          className="h-auto w-[30%]"
+          width={48}
+          height={48}
+          className="block h-12 w-12"
         />
       </Link>
       <nav aria-label="Navigazione principale">
@@ -38,12 +38,12 @@ export default function Menu() {
             return (
               <li key={item.label}>
                 <Link
-                  href={item.href}
                   className={`pb-1 text-zinc-800 transition-colors visited:text-zinc-800 hover:text-zinc-800 active:text-zinc-800 focus:text-zinc-800 ${
                     isActive
                       ? "underline decoration-2 underline-offset-4"
                       : "no-underline hover:no-underline"
                   }`}
+                  href={item.href}
                 >
                   {item.label}
                 </Link>

@@ -1,18 +1,22 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Patrick_Hand, Poppins } from "next/font/google";
+import { Patrick_Hand, Poppins } from "next/font/google";
 import "./globals.css";
 
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  style: ["normal", "italic"],
+  weight: ["400", "500", "600", "700"],
+  style: ["normal"],
   display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const poppinsItalic = Poppins({
+  variable: "--font-poppins-italic",
   subsets: ["latin"],
+  weight: ["400", "700"],
+  style: ["italic"],
+  display: "swap",
+  preload: false,
 });
 
 const patrickHand = Patrick_Hand({
@@ -49,7 +53,7 @@ export default function RootLayout({
   return (
     <html
       lang="it"
-      className={`${poppins.variable} ${geistMono.variable} ${patrickHand.variable} h-full antialiased`}
+      className={`${poppins.variable} ${poppinsItalic.variable} ${patrickHand.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col" suppressHydrationWarning>

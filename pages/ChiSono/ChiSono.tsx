@@ -1,28 +1,50 @@
-"use client";
+import Image from "next/image";
+import Link from "next/link";
 
 import Footer from "@/Components/Footer/Footer";
 import Menu from "@/Components/Manu/Menu";
 import SketchFrame from "@/Components/SketchFrame/SketchFrame";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
+
+type Section = {
+  type: string;
+  title: string;
+  description: string;
+  image: string;
+  alt: string;
+  textWidth: string;
+};
+
+const SECTIONS: Section[] = [
+  {
+    type: "Poesia",
+    title: "Poesie",
+    description: "Emozioni in versi, sussurri dell'anima.",
+    image: "/assets/piuma_tavolo.png",
+    alt: "Icona poesie",
+    textWidth: "max-w-[18ch]",
+  },
+  {
+    type: "Racconto breve",
+    title: "Racconti brevi",
+    description: "Storie di vita, ordinarie o non.",
+    image: "/assets/taccuino.png",
+    alt: "Icona racconti brevi",
+    textWidth: "max-w-[19ch]",
+  },
+  {
+    type: "Pensiero",
+    title: "Pensieri",
+    description: "Riflessioni sparse, appunti di viaggio.",
+    image: "/assets/candela.png",
+    alt: "Icona pensieri",
+    textWidth: "max-w-[20ch]",
+  },
+];
+
+const sectionHref = (type: string) =>
+  `/i-miei-scritti?type=${encodeURIComponent(type)}#ultimi-scritti`;
 
 export default function ChiSono() {
-  const router = useRouter();
-
-  const navigateTo = (type?: string) => {
-    const hash = "#ultimi-scritti";
-    const query = type ? `?type=${encodeURIComponent(type)}` : "";
-    router.push(`/i-miei-scritti${query}${hash}`);
-  };
-
-  const handleBoxKeyDown =
-    (type?: string) => (event: React.KeyboardEvent<HTMLDivElement>) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        navigateTo(type);
-      }
-    };
-
   return (
     <>
       <Menu />
@@ -36,13 +58,14 @@ export default function ChiSono() {
           </header>
 
           <div className="grid gap-8 md:grid-cols-[316px_minmax(0,1fr)] md:items-start xl:grid-cols-[316px_minmax(0,1fr)_376px]">
-            <div className="mx-auto md:mx-0 md:self-start">
+            <div className="mx-auto w-full max-w-[292px] md:mx-0 md:self-start">
               <Image
+                preload
                 src="/assets/immagine_personale.png"
                 alt="Ritratto personale"
                 width={292}
                 height={292}
-                className="h-auto w-full max-w-[292px] rounded-full object-cover"
+                className="block h-auto w-full rounded-full object-cover"
               />
             </div>
 
@@ -51,9 +74,9 @@ export default function ChiSono() {
                 Mi chiamo <strong>Jacopo</strong>, per gli amici{" "}
                 <strong>Ciccio</strong>. <br />
                 Sono un Capricorno, ma non so se questo dica davvero qualcosa di
-                me. Forse solo che vedo montagne interiori che nessun'altro
+                me. Forse solo che vedo montagne interiori che nessun&apos;altro
                 vede, e che ho quella ostinazione che nasce non dalla forza, ma
-                dall'insicurezza. <br />
+                dall&apos;insicurezza. <br />
                 Scrivere, per me, non è un hobby. È un modo per non soccombere a
                 ciò che mi porto dentro. <br />
                 La mia mente è un luogo contorto dove i pensieri si muovono come
@@ -90,14 +113,14 @@ export default function ChiSono() {
                 smettere di sentire.
               </p>
             </div>
-            <div className="mx-auto md:col-span-2 md:mx-0 md:flex md:justify-center xl:col-span-1 xl:h-full xl:items-end xl:justify-end">
+            <div className="mx-auto w-full max-w-[360px] md:col-span-2 md:mx-0 md:flex md:max-w-none md:justify-center xl:col-span-1 xl:h-full xl:items-end xl:justify-end">
               <SketchFrame className="w-full max-w-[360px]">
                 <Image
                   src="/assets/immagine_penna.png"
                   alt="Ritratto Penna"
                   width={360}
-                  height={360}
-                  className="h-auto w-full max-w-[360px] rounded-[20px] object-contain"
+                  height={203}
+                  className="block h-auto w-full rounded-[20px] object-contain"
                 />
               </SketchFrame>
             </div>
@@ -114,110 +137,41 @@ export default function ChiSono() {
             </h2>
 
             <div className="mt-8 grid gap-8 sm:grid-cols-3">
-              <article className="rounded-[20px] p-3">
-                <div className="relative z-[1] flex flex-col items-center">
-                  <div
-                    className="flex cursor-pointer items-center justify-center group relative w-full max-w-[310px] aspect-square overflow-hidden rounded-[20px]"
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => navigateTo("Poesia")}
-                    onKeyDown={handleBoxKeyDown("Poesia")}
-                    aria-label="Vai alla sezione Grovigli di parole"
-                  >
-                    <div
-                      aria-hidden="true"
-                      className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+              {SECTIONS.map((section) => (
+                <article key={section.type} className="rounded-[20px] p-3">
+                  <div className="relative z-[1] flex flex-col items-center">
+                    <Link
+                      href={sectionHref(section.type)}
+                      aria-label={`Vai a ${section.title.toLowerCase()}`}
+                      className="group relative flex aspect-square w-full max-w-[310px] cursor-pointer items-center justify-center overflow-hidden rounded-[20px]"
                     >
-                      <SketchFrame className="h-full w-full aspect-square">
-                        {null}
-                      </SketchFrame>
-                    </div>
-                    <Image
-                      src="/assets/piuma_tavolo.png"
-                      alt="Icona poesie"
-                      width={500}
-                      height={500}
-                      className="block h-full w-full object-cover rounded-[20px] max-w-[280px] max-h-[280px]"
-                    />
-                  </div>
-                  <h3 className="mt-3 text-lg font-semibold text-zinc-800">
-                    Poesie
-                  </h3>
-                  <p className="mt-2 max-w-[18ch] text-sm leading-6 text-zinc-600">
-                    Emozioni in versi, sussurri dell&apos;anima.
-                  </p>
-                </div>
-              </article>
-
-              <article className="rounded-[20px] p-3">
-                <div className="relative z-[1] flex flex-col items-center">
-                  <div
-                    className="flex cursor-pointer items-center justify-center group relative w-full max-w-[310px] aspect-square overflow-hidden rounded-[20px]"
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => navigateTo("Racconto breve")}
-                    onKeyDown={handleBoxKeyDown("Racconto breve")}
-                    aria-label="Vai alla sezione Grovigli di parole"
-                  >
-                    <div
-                      aria-hidden="true"
-                      className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                      <div
+                        aria-hidden="true"
+                        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100"
+                      >
+                        <SketchFrame className="h-full w-full aspect-square">
+                          {null}
+                        </SketchFrame>
+                      </div>
+                      <Image
+                        src={section.image}
+                        alt={section.alt}
+                        width={280}
+                        height={280}
+                        className="block h-full max-h-[280px] w-full max-w-[280px] rounded-[20px] object-cover"
+                      />
+                    </Link>
+                    <h3 className="mt-3 text-lg font-semibold text-zinc-800">
+                      {section.title}
+                    </h3>
+                    <p
+                      className={`mt-2 ${section.textWidth} text-sm leading-6 text-zinc-600`}
                     >
-                      <SketchFrame className="h-full w-full aspect-square">
-                        {null}
-                      </SketchFrame>
-                    </div>
-                    <Image
-                      src="/assets/taccuino.png"
-                      alt="Icona racconti brevi"
-                      width={500}
-                      height={500}
-                      className="block h-full w-full object-cover rounded-[20px] max-w-[280px] max-h-[280px]"
-                    />
+                      {section.description}
+                    </p>
                   </div>
-                  <h3 className="mt-3 text-lg font-semibold text-zinc-800">
-                    Racconti brevi
-                  </h3>
-                  <p className="mt-2 max-w-[19ch] text-sm leading-6 text-zinc-600">
-                    Storie di vita, ordinarie o non.
-                  </p>
-                </div>
-              </article>
-
-              <article className="rounded-[20px] p-3">
-                <div className="relative z-[1] flex flex-col items-center">
-                  <div
-                    className="flex cursor-pointer items-center justify-center group relative w-full max-w-[310px] aspect-square overflow-hidden rounded-[20px]"
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => navigateTo("Pensiero")}
-                    onKeyDown={handleBoxKeyDown("Pensiero")}
-                    aria-label="Vai alla sezione Grovigli di parole"
-                  >
-                    <div
-                      aria-hidden="true"
-                      className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                    >
-                      <SketchFrame className="h-full w-full aspect-square">
-                        {null}
-                      </SketchFrame>
-                    </div>
-                    <Image
-                      src="/assets/candela.png"
-                      alt="Icona pensieri"
-                      width={500}
-                      height={500}
-                      className="block h-full w-full object-cover rounded-[20px] max-w-[280px] max-h-[280px]"
-                    />
-                  </div>
-                  <h3 className="mt-3 text-lg font-semibold text-zinc-800">
-                    Pensieri
-                  </h3>
-                  <p className="mt-2 max-w-[20ch] text-sm leading-6 text-zinc-600">
-                    Riflessioni sparse, appunti di viaggio.
-                  </p>
-                </div>
-              </article>
+                </article>
+              ))}
             </div>
           </section>
         </section>
